@@ -3,7 +3,7 @@
 import { chapter } from "@prisma/client";
 import { useEffect, useState } from "react";
 import {
-  DragDropContextt,
+  DragDropContext,
   Droppable,
   Draggable,
   DropResult,
@@ -26,19 +26,36 @@ export const ChaptersList = ({
   const [chapters, setChapters] = useState(items);
 
   useEffect(() => {
-    setIsMounted(true);
+    setIsMounted(true); 
   }, []);
 
   useEffect(() => {
     setChapters(items);
   }, [items]);
 
+const onDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+
+    const items= Array.from(chapters);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    const startIndex = Math.min(result.source.index, result.destination.index);
+const endIndex = Math.max(result.source.index, result.destination.index);
+   const updatedChapters = items.slice(startIndex,endIndex + 1);  
+   setChapters(items);
+   const bulkUpdateData = updatedChapters.map((chapter) => ({ 
+        id: chapter.id,
+        position: items.findIndex ((item) => item.id === chapter.id),
+        }));
+        onReorder(bulkUpdateData);
+}
+
   if (!isMounted) {
     return null;
   }
 
   return (
-    <DragDropContext onDragEnd={() => {}}>
+    <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="chapters">
         {(provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef}>
@@ -58,7 +75,6 @@ export const ChaptersList = ({
                       chapter.isPublished &&
                         "bg-sky-100 border-sky-200 text-sky-700"
                     )}
-                    ref={provided.innerRef}
                     {...provided.draggableProps}
                   >
                     <div

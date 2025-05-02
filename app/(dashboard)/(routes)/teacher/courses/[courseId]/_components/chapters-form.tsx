@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { chapter, course } from "@prisma/client";
 import axios from "axios";
-import { Pencil, PlusCircle } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -32,7 +32,6 @@ const formSchema = z.object({
 
 export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
   const [isCreating, setIsCreating] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
 
   const toggleCreating = () => setIsCreating((current) => !current);
 
