@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { chapter, course } from "@prisma/client";
 import axios from "axios";
-import { PlusCircle } from "lucide-react";
+import { Loader2, PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -22,7 +22,7 @@ import { z } from "zod";
 import { ChaptersList } from "./chapters-list";
 
 interface ChaptersFormProps {
-  initialData: course & {chapters: chapter[]};
+  initialData: course & { chapters: chapter[] };
   courseId: string;
 }
 
@@ -32,6 +32,7 @@ const formSchema = z.object({
 
 export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
   const [isCreating, setIsCreating] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const toggleCreating = () => setIsCreating((current) => !current);
 
@@ -39,7 +40,7 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {title:"" ,}, // Ensure default values
+    defaultValues: { title: "" }, // Ensure default values
   });
 
   const { isSubmitting, isValid } = form.formState;
@@ -56,8 +57,31 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
     }
   };
 
+  const onReorder = async (updateData: { id: string; position: number }[]) => {
+    try {
+      setIsUpdating(true);
+      await axios.put(`/api/courses/${courseId}/chapters/reorder`, {
+        list: updateData,
+      });
+      toast.success("Chapters reordered");
+      router.refresh();
+    } catch {
+      toast.error("Something went wrong");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const onEdit = (id: string) => {
+    router.push(`/teacher/courses/${courseId}/chapters/${id}`);
+  };
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
+    <div className="relative mt-6 border bg-slate-100 rounded-md p-4">
+      {isUpdating && (
+        <div className="absolute w-full h-full bg-slate-500/200 top-0 right-0 rounded-m flex items-center justify-center">
+          <Loader2 className="animate-spin h-6 w-6 text-sky-700" />
+        </div>
+      )}
       <div className="font-medium flex items-center justify-between">
         Course chapters
         <Button onClick={toggleCreating} variant="ghost">
@@ -101,25 +125,26 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
           </form>
         </Form>
       )}
-      {
-        !isCreating && (
-        <div className={cn("text-sm mt-2", !initialData.chapters.length && "text-slate-500 italic")}> 
-         {!initialData.chapters.length && " NO chapters"}
-        <ChaptersList
-        onEdit={() => {}}
-        onReorder={() => {}}
-        items={initialData.chapters || []}
-        
-        />
-        </div>)
-      }
-      {
-        !isCreating && (
-          <p className="text-xs mt-4 text-muted-foreground">
-            Drag and drop to reorder chapters.
-          </p>
-        ) 
-      }
+      {!isCreating && (
+        <div
+          className={cn(
+            "text-sm mt-2",
+            !initialData.chapters.length && "text-slate-500 italic"
+          )}
+        >
+          {!initialData.chapters.length && " NO chapters"}
+          <ChaptersList
+            onEdit={onEdit}
+            onReorder={onReorder}
+            items={initialData.chapters || []}
+          />
+        </div>
+      )}
+      {!isCreating && (
+        <p className="text-xs mt-4 text-muted-foreground">
+          Drag and drop to reorder chapters.
+        </p>
+      )}
     </div>
   );
 };
