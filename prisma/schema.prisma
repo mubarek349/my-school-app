@@ -1,0 +1,265 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model admin {
+  id        String   @id @default(uuid())
+  name      String
+  passcode  String
+  phoneno   String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+}
+
+model course {
+  id          String  @id @default(uuid())
+  userId      String
+  title       String  @db.Text
+  description String? @db.Text
+  imageUrl    String? @db.Text
+  price       Float?
+  isPublished Boolean @default(false)
+
+  // teacher        teacher?         @relation(fields: [teacherId], references: [id])
+  // courseprogress courseprogress[]
+  categoryId String?
+  category   category?    @relation(fields: [categoryId], references: [id])
+
+  chapters chapter[]
+  attachments attachment[]
+  purchases purchase[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+
+  @@index([categoryId])
+}
+
+model category {
+  id     String   @id @default(uuid())
+  name   String
+  course course[]
+}
+
+model attachment {
+  id   String @id @default(uuid())
+  name String
+  url  String @db.Text
+
+  course   course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+
+  @@index([courseId])
+}
+
+model chapter {
+  id          String  @id @default(uuid())
+  title       String
+  description String? @db.Text
+  videoUrl    String? @db.Text
+  position    Int
+  isPublished Boolean @default(false)
+  isFree      Boolean @default(false)
+
+  muxData muxData?
+
+  courseId String
+  course   course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+
+  userProgress userProgress[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+}
+
+model muxData {
+  id         String  @id @default(uuid())
+  assetId    String
+  playbackId String?
+
+  chapterId String  @unique
+  chapter   chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+}
+
+model userProgress {
+  id     String @id @default(uuid())
+  userId String
+
+  chapterId String
+  chapter   chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  isCompleted Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([chapterId])
+  @@unique([userId, chapterId])
+}
+
+model purchase {
+  id        String   @id @default(uuid())
+  userId    String
+
+  courseId  String
+  course course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+ @@index([courseId])
+}
+
+model stripeCustomer {
+  id        String   @id @default(uuid())
+  userId    String @unique
+  stripeCustomerId  String   @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+// model courseprogress {
+//   id          String   @id
+//   progress    Float    @default(0)
+//   studentId   String
+//   courseId    String
+//   lastUpdated DateTime
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime
+//   course      course   @relation(fields: [courseId], references: [id], map: "courseProgress_courseId_fkey")
+//   student     student  @relation(fields: [studentId], references: [id], map: "courseProgress_studentId_fkey")
+
+//   @@index([courseId], map: "courseProgress_courseId_fkey")
+//   @@index([studentId], map: "courseProgress_studentId_fkey")
+// }
+
+// model exam {
+//   id          String        @id
+//   title       String
+//   moduleId    String
+//   createdAt   DateTime      @default(now())
+//   updatedAt   DateTime
+//   module      module        @relation(fields: [moduleId], references: [id])
+//   examattempt examattempt[]
+//   question    question[]
+
+//   @@index([moduleId], map: "exam_moduleId_fkey")
+// }
+
+// model examattempt {
+//   id          String   @id
+//   score       Float
+//   attemptDate DateTime @default(now())
+//   studentId   String
+//   examId      String
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime
+//   exam        exam     @relation(fields: [examId], references: [id], map: "examAttempt_examId_fkey")
+//   student     student  @relation(fields: [studentId], references: [id], map: "examAttempt_studentId_fkey")
+
+//   @@index([examId], map: "examAttempt_examId_fkey")
+//   @@index([studentId], map: "examAttempt_studentId_fkey")
+// }
+
+// model module {
+//   id             String           @id
+//   title          String
+//   content        String           @db.Text
+//   courseId       String
+//   createdAt      DateTime         @default(now())
+//   updatedAt      DateTime
+//   exam           exam[]
+//   course         course           @relation(fields: [courseId], references: [id])
+//   moduleprogress moduleprogress[]
+
+//   @@index([courseId], map: "module_courseId_fkey")
+// }
+
+// model moduleprogress {
+//   id          String   @id
+//   studentId   String
+//   moduleId    String
+//   progress    Float    @default(0)
+//   lastUpdated DateTime
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime
+//   module      module   @relation(fields: [moduleId], references: [id], map: "moduleProgress_moduleId_fkey")
+//   student     student  @relation(fields: [studentId], references: [id], map: "moduleProgress_studentId_fkey")
+
+//   @@index([moduleId], map: "moduleProgress_moduleId_fkey")
+//   @@index([studentId], map: "moduleProgress_studentId_fkey")
+// }
+
+// model question {
+//   id             String           @id
+//   questionNo     String
+//   content        String
+//   examId         String
+//   createdAt      DateTime         @default(now())
+//   updatedAt      DateTime
+//   exam           exam             @relation(fields: [examId], references: [id])
+//   questionoption questionoption[]
+
+//   @@index([examId], map: "question_examId_fkey")
+// }
+
+// model questionoption {
+//   id         String   @id
+//   option     String
+//   content    String
+//   questionId String
+//   isCorrect  Boolean  @default(false)
+//   createdAt  DateTime @default(now())
+//   updatedAt  DateTime
+//   question   question @relation(fields: [questionId], references: [id], map: "questionOption_questionId_fkey")
+
+//   @@index([questionId], map: "questionOption_questionId_fkey")
+// }
+
+// model student {
+//   id                  String              @id
+//   studentId           String              @unique
+//   createdAt           DateTime            @default(now())
+//   updatedAt           DateTime
+//   courseprogress      courseprogress[]
+//   enrollment          enrollment[]
+//   examattempt         examattempt[]
+//   moduleprogress      moduleprogress[]
+//   wpos_wpdatatable_23 wpos_wpdatatable_23 @relation(fields: [studentId], references: [wdt_ID])
+// }
+
+// model teacher {
+//   id        String   @id
+//   name      String
+//   passcode  String
+//   phoneno   String   @unique
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime
+//   course    course[]
+// }
+
+// model wpos_wpdatatable_23 {
+//   wdt_ID    String   @id
+//   name      String
+//   passcode  String
+//   phoneno   String   @unique
+//   status    String
+//   startdate DateTime @default(now())
+//   chat_id   String
+//   student   student?
+// }

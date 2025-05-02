@@ -1,6 +1,6 @@
 const TeacherPage = () => {
   return (
-    <div>
+    <div className="flex flex-col">
       <h1>Teacher Page</h1>
       <p>This is the teacher page.</p>
     </div>
