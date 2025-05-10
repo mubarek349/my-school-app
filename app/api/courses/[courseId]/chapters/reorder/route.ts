@@ -2,7 +2,7 @@ import prisma from "@/lib/db";
 import { NextResponse } from "next/server";
 export async function PUT(
   req: Request,
-  { params }: { params: { courseId: string } }
+  {params}: { params: { courseId: string } }
 ) {
   try {
     const userId = "clg1v2j4f0000l5v8xq3z7h4d";
@@ -13,13 +13,13 @@ export async function PUT(
     const ownCourse = await prisma.course.findUnique({
       where: {
         id: params.courseId,
-        userId: userId,
+         userId
       },
     });
     if (!ownCourse) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    for (const item of list) {
+    for (let item of list) {
       await prisma.chapter.update({
         where: { id: item.id },
         data: { position: item.position },

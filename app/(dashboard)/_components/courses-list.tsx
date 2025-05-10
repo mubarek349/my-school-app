@@ -1,21 +1,15 @@
 "use client";
-import {LucideIcon} from "lucide-react";
-import {usePathname,useRouter} from "next/navigation";
-import {cn} from "@/lib/utils";
+import { LucideIcon } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
-interface SidebarItemProps{
-    icon:LucideIcon;
-    label:string;
-    href:string;
-};
-export const SidebarItem =({
-    icon:Icon,
-    label,
-    href,
-}:SidebarItemProps)=>{
+interface SidebarItemProps {
+  icon: LucideIcon;
+  label: string;
+  href: string;
+}
+export const CoursesList = ({ icon: Icon, label, href }: SidebarItemProps) => {
   const pathname = usePathname();
-
-  
   const router = useRouter();
 
   const isActive =
@@ -51,4 +45,4 @@ export const SidebarItem =({
       />
     </button>
   );
-}
+};

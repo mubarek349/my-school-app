@@ -8,36 +8,23 @@ datasource db {
   relationMode = "prisma"
 }
 
-model admin {
-  id        String   @id @default(uuid())
-  name      String
-  passcode  String
-  phoneno   String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime
-}
-
 model course {
   id          String  @id @default(uuid())
   userId      String
   title       String  @db.Text
   description String? @db.Text
   imageUrl    String? @db.Text
-  price       Float?
+  // price       Float?
   isPublished Boolean @default(false)
 
-  // teacher        teacher?         @relation(fields: [teacherId], references: [id])
-  // courseprogress courseprogress[]
-  categoryId String?
-  category   category?    @relation(fields: [categoryId], references: [id])
+  attachments attachment[]
+  categoryId  String?
+  category    category?    @relation(fields: [categoryId], references: [id])
 
   chapters chapter[]
-  attachments attachment[]
-  purchases purchase[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
 
   @@index([categoryId])
 }
@@ -56,10 +43,14 @@ model attachment {
   course   course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId String
 
+  teacher   teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  teacherId String
+
   createdAt DateTime @default(now())
   updatedAt DateTime
 
   @@index([courseId])
+  @@index([teacherId])
 }
 
 model chapter {
@@ -71,13 +62,12 @@ model chapter {
   isPublished Boolean @default(false)
   isFree      Boolean @default(false)
 
-  muxData muxData?
+  questions question[]
 
   courseId String
   course   course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
-
-  userProgress userProgress[]
+  studentProgress studentProgress[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -85,181 +75,172 @@ model chapter {
   @@index([courseId])
 }
 
-model muxData {
-  id         String  @id @default(uuid())
-  assetId    String
-  playbackId String?
-
-  chapterId String  @unique
-  chapter   chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-
-}
-
-model userProgress {
-  id     String @id @default(uuid())
-  userId String
-
-  chapterId String
-  chapter   chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-
-  isCompleted Boolean @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model question {
+  id              String           @id @default(cuid())
+  chapter         chapter          @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId       String
+  question        String
+  questionOptions questionOption[]
+  questionAnswer  questionAnswer[]
+  studentQuiz     studentQuiz[]
 
   @@index([chapterId])
-  @@unique([userId, chapterId])
 }
 
-model purchase {
-  id        String   @id @default(uuid())
-  userId    String
+model questionOption {
+  id                 String              @id @default(cuid())
+  question           question            @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId         String
+  option             String
+  questionAnswer     questionAnswer[]
+  studentQuizAnswers studentQuizAnswer[]
 
-  courseId  String
-  course course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  @@index([questionId])
+}
 
+model questionAnswer {
+  id         String         @id @default(cuid())
+  question   question       @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String
+  answer     questionOption @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  answerId   String
+
+  @@index([answerId])
+  @@index([questionId])
+}
+
+// STUDENT QUIZ PARTICIPATION
+model studentQuiz {
+  id                 String              @id @default(cuid())
+  student            wpos_wpdatatable_23 @relation(fields: [studentId], references: [wdt_ID], onDelete: Cascade)
+  studentId          Int
+  question           question            @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId         String
+  takenAt            DateTime            @default(now())
+  studentQuizAnswers studentQuizAnswer[]
+
+  @@unique([studentId, questionId])
+  @@index([questionId])
+  @@index([studentId])
+}
+
+model studentQuizAnswer {
+  id               String         @id @default(cuid())
+  studentQuiz      studentQuiz    @relation(fields: [studentQuizId], references: [id], onDelete: Cascade)
+  studentQuizId    String
+  selectedOption   questionOption @relation(fields: [selectedOptionId], references: [id], onDelete: Cascade)
+  selectedOptionId String
+
+  @@unique([studentQuizId, selectedOptionId])
+  @@index([selectedOptionId])
+  @@index([studentQuizId])
+}
+
+// TRACK STUDENT chapter PROGRESS
+model studentProgress {
+  id          String              @id @default(cuid())
+  student     wpos_wpdatatable_23 @relation(fields: [studentId], references: [wdt_ID], onDelete: Cascade)
+  studentId   Int
+  chapter     chapter             @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId   String
+  isCompleted Boolean             @default(false)
+  completedAt DateTime?
+
+  @@unique([studentId, chapterId])
+  @@index([chapterId])
+  @@index([studentId])
+}
+
+model admin {
+  id        String   @id @default(cuid())
+  name      String
+  phoneno   String   @unique
+  passcode  String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
- @@index([courseId])
 }
 
-model stripeCustomer {
-  id        String   @id @default(uuid())
-  userId    String @unique
-  stripeCustomerId  String   @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+model teacher {
+  id        String       @id @default(cuid())
+  name      String
+  phoneno   String       @unique
+  passcode  String
+  isActive  Boolean      @default(true)
+  attachemt attachment[]
+  createdAt DateTime     @default(now())
 }
-// model courseprogress {
-//   id          String   @id
-//   progress    Float    @default(0)
-//   studentId   String
-//   courseId    String
-//   lastUpdated DateTime
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime
-//   course      course   @relation(fields: [courseId], references: [id], map: "courseProgress_courseId_fkey")
-//   student     student  @relation(fields: [studentId], references: [id], map: "courseProgress_studentId_fkey")
 
-//   @@index([courseId], map: "courseProgress_courseId_fkey")
-//   @@index([studentId], map: "courseProgress_studentId_fkey")
-// }
+model wpos_wpdatatable_23 {
+  wdt_ID         Int               @id @default(autoincrement())
+  name           String
+  passcode       String            @unique
+  phoneno        String            @unique
+  status         String
+  subject        String
+  startdate      DateTime
+  chat_id        String            @unique
+  progress       studentProgress[]
+  studentQuizzes studentQuiz[]
+}
 
-// model exam {
-//   id          String        @id
-//   title       String
-//   moduleId    String
-//   createdAt   DateTime      @default(now())
-//   updatedAt   DateTime
-//   module      module        @relation(fields: [moduleId], references: [id])
-//   examattempt examattempt[]
-//   question    question[]
+// model userProgress {
+//   id     String @id @default(uuid())
+//   userId String 
 
-//   @@index([moduleId], map: "exam_moduleId_fkey")
-// }
+//   chapterId String
+//   chapter   chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
-// model examattempt {
-//   id          String   @id
-//   score       Float
-//   attemptDate DateTime @default(now())
-//   studentId   String
-//   examId      String
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime
-//   exam        exam     @relation(fields: [examId], references: [id], map: "examAttempt_examId_fkey")
-//   student     student  @relation(fields: [studentId], references: [id], map: "examAttempt_studentId_fkey")
+//   isCompleted Boolean @default(false)
 
-//   @@index([examId], map: "examAttempt_examId_fkey")
-//   @@index([studentId], map: "examAttempt_studentId_fkey")
-// }
-
-// model module {
-//   id             String           @id
-//   title          String
-//   content        String           @db.Text
-//   courseId       String
-//   createdAt      DateTime         @default(now())
-//   updatedAt      DateTime
-//   exam           exam[]
-//   course         course           @relation(fields: [courseId], references: [id])
-//   moduleprogress moduleprogress[]
-
-//   @@index([courseId], map: "module_courseId_fkey")
-// }
-
-// model moduleprogress {
-//   id          String   @id
-//   studentId   String
-//   moduleId    String
-//   progress    Float    @default(0)
-//   lastUpdated DateTime
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime
-//   module      module   @relation(fields: [moduleId], references: [id], map: "moduleProgress_moduleId_fkey")
-//   student     student  @relation(fields: [studentId], references: [id], map: "moduleProgress_studentId_fkey")
-
-//   @@index([moduleId], map: "moduleProgress_moduleId_fkey")
-//   @@index([studentId], map: "moduleProgress_studentId_fkey")
-// }
-
-// model question {
-//   id             String           @id
-//   questionNo     String
-//   content        String
-//   examId         String
-//   createdAt      DateTime         @default(now())
-//   updatedAt      DateTime
-//   exam           exam             @relation(fields: [examId], references: [id])
-//   questionoption questionoption[]
-
-//   @@index([examId], map: "question_examId_fkey")
-// }
-
-// model questionoption {
-//   id         String   @id
-//   option     String
-//   content    String
-//   questionId String
-//   isCorrect  Boolean  @default(false)
-//   createdAt  DateTime @default(now())
-//   updatedAt  DateTime
-//   question   question @relation(fields: [questionId], references: [id], map: "questionOption_questionId_fkey")
-
-//   @@index([questionId], map: "questionOption_questionId_fkey")
-// }
-
-// model student {
-//   id                  String              @id
-//   studentId           String              @unique
-//   createdAt           DateTime            @default(now())
-//   updatedAt           DateTime
-//   courseprogress      courseprogress[]
-//   enrollment          enrollment[]
-//   examattempt         examattempt[]
-//   moduleprogress      moduleprogress[]
-//   wpos_wpdatatable_23 wpos_wpdatatable_23 @relation(fields: [studentId], references: [wdt_ID])
-// }
-
-// model teacher {
-//   id        String   @id
-//   name      String
-//   passcode  String
-//   phoneno   String   @unique
 //   createdAt DateTime @default(now())
-//   updatedAt DateTime
-//   course    course[]
+//   updatedAt DateTime @updatedAt
+
+//   @@index([chapterId])
+//   @@unique([userId, chapterId])
 // }
 
-// model wpos_wpdatatable_23 {
-//   wdt_ID    String   @id
-//   name      String
-//   passcode  String
-//   phoneno   String   @unique
-//   status    String
-//   startdate DateTime @default(now())
-//   chat_id   String
-//   student   student?
+// model purchase {
+//   id        String   @id @default(uuid())
+//   userId    String
+
+//   courseId  String
+//   course course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//  @@index([courseId])
+// }
+
+// model stripeCustomer {
+//   id        String   @id @default(uuid())
+//   userId    String @unique
+//   stripeCustomerId  String   @unique
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+// }
+
+// COURSE SYSTEM
+// model course {
+//   id        String   @id @default(cuid())
+//   title     String
+//   description String
+//   teacher   teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+//   teacherId String
+//   chapters   chapter[]
+//   createdAt DateTime @default(now())
+// }
+
+// model chapter {
+//   id        String   @id @default(cuid())
+//   title     String
+//   videoUrl  String
+//   course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+//   courseId  String
+//   // quiz      Quiz?
+//   question   Question[]
+//   order     Int
+//   StudentProgress StudentProgress[]
+//   createdAt DateTime @default(now())
 // }

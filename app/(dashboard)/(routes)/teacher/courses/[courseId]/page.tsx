@@ -24,11 +24,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
       userId,
     },
     include: {
-      chapters: {
-        orderBy: {
-          createdAt: "asc",
-        },
-      },
+      chapters: { include: { course: { select: { isPublished: true } } } },
       attachments: {
         orderBy: {
           createdAt: "desc",
@@ -45,9 +41,9 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
     course.title,
     course.description,
     course.imageUrl,
-    course.price,
-    course.categoryId,
-    course.chapters.some(chapter => chapter.isPublished)
+    // course.price,
+    // course.categoryId,
+    course.chapters,
   ];
 
   const totalFields = requiredFields.length;
@@ -77,15 +73,13 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
       </div>
       <div className="space-y-6">
         <div>
-        <div className="flex items-center gap-x-2">
+          <div className="flex items-center gap-x-2">
             <IconBadge icon={ListChecks} />
             <h2 className="text-xl">Course chapters</h2>
           </div>
           <ChaptersForm initialData={course} courseId={course.id} />
         </div>
       </div>
-
-      
     </div>
   );
 };

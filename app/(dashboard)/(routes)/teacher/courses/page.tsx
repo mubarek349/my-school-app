@@ -1,14 +1,18 @@
+import { getCourses } from "@/actions/get-courses";
+import { CreatedCoursesList } from "@/components/teachers-courses-list";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-const CoursesPage = () => {
+const CoursesPage = async () => {
+   const courses = await getCourses();
   return (
-    <div className="p-6">
-      <Link href="/teacher/create"  >
-        <Button> 
-          Create Course
-        </Button>
+    <div className="p-6 ">
+      <Link href="/teacher/create">
+        <Button>Create Course</Button>
       </Link>
+      <div>
+        <CreatedCoursesList courses={courses} />
+      </div>
     </div>
   );
 }

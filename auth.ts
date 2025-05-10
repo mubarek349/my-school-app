@@ -11,13 +11,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return true;
     },
   },
-  pages:{
+  pages: {
     // error:''
-
   },
   providers: [
     Credentials({
-
       // You can specify which fields should be submitted, by adding keys to the `credentials` object.
       // e.g. domain, username, password, 2FA token, etc.
       credentials: {
@@ -28,9 +26,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           placeholder: "Passcode",
         },
       },
-      
+
       authorize: async (credentials) => {
-        const user = await prisma.admin.findFirst({
+        return { id: "" };
+        const user = await prisma.teacher.findFirst({
           where: {
             phoneno: credentials.phoneno as string,
             passcode: credentials.passcode as string,
@@ -45,5 +44,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
-  
 });
