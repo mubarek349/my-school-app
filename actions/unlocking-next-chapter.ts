@@ -2,8 +2,13 @@
 import { correctAnswer } from "@/actions/get-result";
 import prisma from "@/lib/db";
 import { showAnswer } from "./show-answers";
+import sendMessage from "@/bot";
 let noOfTrial = 0;
-export async function unlockingNextChapter(courseId:string, chapterId: string, chat_id: string) {
+export async function unlockingNextChapter(
+  courseId: string,
+  chapterId: string,
+  chat_id: string
+) {
   try {
     if (!chapterId || !chat_id || !courseId) {
       console.error("Invalid input: chapterId or chat_id is missing.");
@@ -69,21 +74,28 @@ export async function unlockingNextChapter(courseId:string, chapterId: string, c
         prevChapter.position
       );
       const nextChapter = await prisma.chapter.findFirst({
-        where: { 
+        where: {
           courseId: courseId,
-          position: prevChapter.position + 1 },
+          position: prevChapter.position + 1,
+        },
       });
 
       if (nextChapter) {
         console.log("Unlocking next chapter with id:", nextChapter.id);
         await prisma.chapter.update({
-          where: { id: nextChapter.id ,position:prevChapter.position+1},
+          where: { id: nextChapter.id, position: prevChapter.position + 1 },
           data: { isFree: true },
         });
+      } else {
+        const course = await prisma.course.findFirst({
+          where: {
+            id: courseId,
+          },
+        });
+        const courseName = course?.title;
+        const congra = `hello you have finished ${courseName} course thank you so much`;
+        await sendMessage(Number(chat_id), congra);
 
-      }
-      else{
-        const congra = "you have finished the Course";
         return congra;
       }
 

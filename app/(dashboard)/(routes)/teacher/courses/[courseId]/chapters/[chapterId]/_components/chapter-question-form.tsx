@@ -24,8 +24,8 @@ import { QuestionsList } from "./questions-list";
 
 interface ChapterQuestionFormProps {
   initialData: chapter & { questions: question[] };
-  chapterId: string;
   courseId: string;
+  chapterId: string;
 }
 
 const formSchema = z.object({
@@ -44,7 +44,7 @@ export const ChapterQuestionForm = ({
   chapterId,
 }: ChapterQuestionFormProps) => {
   const [isCreating, setIsCreating] = useState(false);
-//   const [isUpdating, setIsUpdating] = useState(false);
+  //   const [isUpdating, setIsUpdating] = useState(false);
 
   const toggleCreating = () => setIsCreating((current) => !current);
 
