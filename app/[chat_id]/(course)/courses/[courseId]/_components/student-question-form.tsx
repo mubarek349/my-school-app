@@ -1,7 +1,7 @@
 "use client";
 import { unlockingNextChapter } from "@/actions/unlocking-next-chapter";
 import { Button } from "@/components/ui/button";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -28,7 +28,7 @@ const StudentQuestionForm = ({
     Record<string, string[]>
   >({});
 
-  // const router = useRouter();
+  const router = useRouter();
 
   async function handleSubmit() {
     try {
@@ -50,14 +50,15 @@ const StudentQuestionForm = ({
         console.error("Failed to submit answers. Response:", response);
         throw new Error("Failed to submit answers.");
       }
-      const feedback = await unlockingNextChapter(chapterId, chat_id);
+      const feedback = await unlockingNextChapter(courseId,chapterId, chat_id);
 
       if (feedback == "you passed the exam") {
-        // router.refresh();
+        router.refresh();
         toast.success(`Answers submitted and ${feedback}`);
       } else if (feedback == "you Failed the exam") {
         toast.error(`Answers submitted and ${feedback}`);
       } else if (feedback == "you have finished the Course") {
+        router.refresh();
         toast.success(`Congragulation!!! ${feedback}`);
       }
     } catch (error) {

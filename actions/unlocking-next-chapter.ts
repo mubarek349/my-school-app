@@ -3,9 +3,9 @@ import { correctAnswer } from "@/actions/get-result";
 import prisma from "@/lib/db";
 import { showAnswer } from "./show-answers";
 let noOfTrial = 0;
-export async function unlockingNextChapter(chapterId: string, chat_id: string) {
+export async function unlockingNextChapter(courseId:string, chapterId: string, chat_id: string) {
   try {
-    if (!chapterId || !chat_id) {
+    if (!chapterId || !chat_id || !courseId) {
       console.error("Invalid input: chapterId or chat_id is missing.");
       throw new Error("Invalid input: chapterId and chat_id are required.");
     }
@@ -69,7 +69,9 @@ export async function unlockingNextChapter(chapterId: string, chat_id: string) {
         prevChapter.position
       );
       const nextChapter = await prisma.chapter.findFirst({
-        where: { position: prevChapter.position + 1 },
+        where: { 
+          courseId: courseId,
+          position: prevChapter.position + 1 },
       });
 
       if (nextChapter) {

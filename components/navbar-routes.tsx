@@ -6,10 +6,10 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 interface CourseNavbarProps {
-  studentName:string;
-  studentStatus:string;
-  studentSubject:string; 
-  chat_id:string, 
+  studentName: string;
+  studentStatus: string;
+  studentSubject: string;
+  chat_id: string;
 }
 
 export const NavbarRoutes = ({
@@ -32,11 +32,11 @@ export const NavbarRoutes = ({
     <>
       {isCoursePage && (
         <div className="flex items-center">
-          <span>studentName: {studentName}  </span>
+          <span>studentName: {studentName} </span>
           <br />
-          <span>studentStatus: {studentStatus}  </span>
+          <span>studentStatus: {studentStatus} </span>
           <br />
-          <span>studentSubject: {studentSubject}  </span>
+          <span>studentSubject: {studentSubject} </span>
         </div>
       )}
       {

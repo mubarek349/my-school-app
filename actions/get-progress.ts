@@ -10,9 +10,7 @@ export async function getProgress(
         courseId,
         // isPublished: true,
       },
-      
     });
-
 
     if (totalChapters === 0) {
       return { progress: 0 };
@@ -20,10 +18,10 @@ export async function getProgress(
 
     const completedChapters = await prisma.studentProgress.count({
       where: {
-        studentId:studentId,
+        studentId: studentId,
         chapter: {
           courseId,
-          isPublished: true,
+          // isPublished: true,
         },
         isCompleted: true,
       },
