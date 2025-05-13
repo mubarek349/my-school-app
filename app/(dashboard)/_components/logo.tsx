@@ -4,9 +4,9 @@ export const Logo = () =>{
        return (
         <Image
           alt="logo"
-          src="/logo.svg"
-          width={130}
-          height={130}
+          src="/logo.jpg"
+          width={50}
+          height={20}
           style={{ width: "auto", height: "auto" }}
         />
        );

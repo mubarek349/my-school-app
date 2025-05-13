@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input"; // Add Input for options
 import { zodResolver } from "@hookform/resolvers/zod";
 import { chapter, question } from "@prisma/client";
 import axios from "axios";
-import {PlusCircle } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form"; // Add useFieldArray for dynamic fields
@@ -31,7 +31,7 @@ interface ChapterQuestionFormProps {
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   options: z
-    .array(z.string().min(1, "Option is required"))
+    .array(z.string().nonempty("Option is required"))
     .min(2, "At least two options are required"),
   answers: z
     .array(z.string().min(1, "Option is required"))
@@ -50,9 +50,15 @@ export const ChapterQuestionForm = ({
 
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  // z.infer<typeof formSchema>
+  const form = useForm<{
+    title: string;
+    options: string[];
+    answers: string[];
+  }>({
+    // resolver: zodResolver(formSchema),
     defaultValues: { title: "", options: ["", ""], answers: [] },
+    mode: "onBlur",
   });
 
   const { fields, append, remove } = useFieldArray({

@@ -6,7 +6,7 @@ import Link from "next/link";
 const CoursesPage = async () => {
    const courses = await getCourses();
   return (
-    <div className="p-6 ">
+    <div className="p-6 overflow-auto">
       <Link href="/teacher/create">
         <Button>Create Course</Button>
       </Link>

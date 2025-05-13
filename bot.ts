@@ -27,3 +27,5 @@ export default async function sendMessage(chat_id: number, message: string) {
     console.error("Failed to send initial message:", err);
   }
 }
+
+startBot();

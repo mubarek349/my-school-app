@@ -50,7 +50,7 @@ const StudentQuestionForm = ({
         console.error("Failed to submit answers. Response:", response);
         throw new Error("Failed to submit answers.");
       }
-      const feedback = await unlockingNextChapter(courseId,chapterId, chat_id);
+      const feedback = await unlockingNextChapter(courseId, chapterId, chat_id);
 
       if (feedback == "you passed the exam") {
         router.refresh();
@@ -103,10 +103,11 @@ const StudentQuestionForm = ({
                   {question.questionOptions.map((option) => (
                     <li
                       key={option.id}
-                      className="p-2 border rounded-md bg-white"
+                      className="p-2 border rounded-md bg-white has-[input:checked]:bg-sky-100 has-[input:checked]:border-sky-300 has-[input:checked]:text-sky-700 "
                     >
-                      <label className="flex items-center gap-x-2">
+                      <label className="flex items-center gap-x-2 ">
                         <input
+                          className="hidden"
                           type="checkbox"
                           name={`question-${question.id}`}
                           value={option.id}

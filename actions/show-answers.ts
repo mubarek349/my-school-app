@@ -21,11 +21,41 @@ export async function showAnswer(chapterId: string) {
     select: { questionId: true, answerId: true },
   });
 
+  const studentAnswersRaw = await prisma.studentQuizAnswer.findMany({
+    where: {
+      selectedOption: {
+        questionId: { in: questionIds },
+      },
+    },
+    select: {
+      studentQuiz: { select: { questionId: true } },
+      selectedOptionId: true,
+    },
+  });
+
+  // Group student answers by questionId
+  const studentResponse: { [questionId: string]: string[] } = {};
+  for (const ans of studentAnswersRaw) {
+    const qid = ans.studentQuiz.questionId;
+    if (!studentResponse[qid]) studentResponse[qid] = [];
+    studentResponse[qid].push(ans.selectedOptionId);
+  }
+
+  // Group correct answers by questionId
   const questionAnswers: { [questionId: string]: string[] } = {};
   for (const qa of questionAnswersRaw) {
     if (!questionAnswers[qa.questionId]) questionAnswers[qa.questionId] = [];
     questionAnswers[qa.questionId].push(qa.answerId);
   }
 
-  console.log("Fetching correct answers for questions:", questionAnswers);
+  // Combine questionAnswers and studentResponse per questionId
+  const combinedAnswers = questionIds.map((id) => ({
+    questionId: id,
+    correctAnswers: questionAnswers[id] || [],
+    studentAnswers: studentResponse[id] || [],
+  }));
+
+  console.log("Combined answers:", combinedAnswers);
+
+  return combinedAnswers;
 }

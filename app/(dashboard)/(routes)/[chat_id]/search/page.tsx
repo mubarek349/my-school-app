@@ -2,6 +2,7 @@ import { getCoursesWithProgress } from "@/actions/get-courses";
 import { CoursesList } from "@/components/courses-list";
 import prisma from "@/lib/db";
 import { redirect } from "next/navigation";
+import CourseData from "./course-data";
 
 const SearchPage = async ({
   params,
@@ -23,10 +24,10 @@ const SearchPage = async ({
   const courses = await getCoursesWithProgress(studentId);
 
   return (
-    <div>
-      <h1>Your Courses</h1>
+    <>
+      <CourseData />
       <CoursesList chat_id={chat_id} courses={courses} />
-    </div>
+    </>
   );
 };
 

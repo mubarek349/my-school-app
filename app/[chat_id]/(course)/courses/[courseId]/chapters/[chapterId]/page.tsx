@@ -30,18 +30,25 @@ export default async function page({
   //   : null;
 
   return (
-    <div className="p-3 video-container flex flex-col gap-y-3 mr-120">
-      <iframe
-        width="700"
-        height="450"
-        src={`https://www.youtube.com/embed/${chapter?.videoUrl ?? ""}`}
-        title="Darulkubra video player"
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-      ></iframe>
-      <div className="flex flex-1/2">
+    <div className="p-3 video-container flex flex-col gap-y-3">
+      {/* Responsive iframe wrapper */}
+      <div
+        className="relative w-full"
+        style={{ paddingTop: "56.25%" /* 16:9 Aspect Ratio */ }}
+      >
+        <iframe
+          className="absolute top-0 left-0 w-full h-full"
+          src={`https://www.youtube.com/embed/${chapter?.videoUrl ?? ""}`}
+          title="Darulkubra video player"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+        ></iframe>
+      </div>
+
+      {/* Navigation buttons */}
+      <div className="flex flex-1/2 mt-4">
         <Button className="">
           <ChevronLeft className="w-4 h-4 m-2" />
           Previous
@@ -51,6 +58,8 @@ export default async function page({
           Next
         </Button>
       </div>
+
+      {/* Student Question Form */}
       <StudentQuestionForm
         chapter={chapter}
         courseId={(await params).courseId}
