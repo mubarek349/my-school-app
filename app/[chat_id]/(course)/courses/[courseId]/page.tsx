@@ -13,7 +13,7 @@ function Page() {
 
   useEffect(() => {
     async function fetchChapter() {
-      const chapterData = await getchapter(courseId); // Fetch chapter data
+      const chapterData = await getchapter(courseId, chat_id); // Fetch chapter data
       setChapter(chapterData);
 
       if (chapterData) {

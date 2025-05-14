@@ -168,7 +168,7 @@ const StudentQuestionForm = ({
                           />
                           {option.option}
                           {status === "correct" && (
-                            <span className="ml-auto text-green-600">
+                            <span className="ml-auto text-green-800">
                               ✓ Correct
                             </span>
                           )}

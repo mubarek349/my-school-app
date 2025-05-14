@@ -104,7 +104,7 @@ export async function unlockingNextChapter(
       return passed;
     } else {
       noOfTrial += 1;
-      if (noOfTrial == 3) {
+      if (noOfTrial == 2) {
         noOfTrial = 0;
         return await showAnswer(chapterId);
       }
