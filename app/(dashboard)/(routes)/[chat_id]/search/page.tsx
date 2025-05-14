@@ -24,10 +24,10 @@ const SearchPage = async ({
   const courses = await getCoursesWithProgress(studentId);
 
   return (
-    <>
+    <div className="overflow-auto">
       <CourseData />
       <CoursesList chat_id={chat_id} courses={courses} />
-    </>
+    </div>
   );
 };
 

@@ -1,10 +1,9 @@
-const TeacherPage = () => {
-  return (
-    <div className="flex flex-col">
-      <h1>Teacher Page</h1>
-      <p>This is the teacher page.</p>
-    </div>
-  );
+import React from "react";
+import { redirect } from "next/navigation";
+
+function Page() {
+  redirect("/teacher/courses");
+  return <div>Page</div>;
 }
-export default TeacherPage;
-// This page is protected by the middleware, so it will only be accessible to authenticated users.
+
+export default Page;

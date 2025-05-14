@@ -11,13 +11,12 @@ interface Course {
 
 interface CoursesListProps {
   courses: Course[];
-  chat_id:string;
+  chat_id: string;
 }
 
-
-export const CoursesList = ({ courses ,chat_id}: CoursesListProps) => {
+export const CoursesList = ({ courses, chat_id }: CoursesListProps) => {
   return (
-    <div className="courses-list p-5 grid grid-cols-2 gap-5">
+    <div className="courses-list p-5 grid grid-cols gap-5">
       {courses.map((course) => (
         <Link
           key={course.id}
@@ -26,10 +25,9 @@ export const CoursesList = ({ courses ,chat_id}: CoursesListProps) => {
         >
           <h2 className="text-xl font-bold">{course.title}</h2>
           <p>{course.description}</p>
-          <CourseProgress value={course.progress}/>
+          <CourseProgress value={course.progress} />
         </Link>
       ))}
     </div>
   );
 };
-

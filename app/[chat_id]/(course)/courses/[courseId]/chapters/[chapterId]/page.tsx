@@ -1,8 +1,8 @@
 import prisma from "@/lib/db";
 import React from "react";
 import StudentQuestionForm from "../../_components/student-question-form";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+// import { Button } from "@/components/ui/button";
+// import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default async function page({
   params,
@@ -49,7 +49,7 @@ export default async function page({
 
       {/* Navigation buttons */}
       
-      <div className="flex flex-1/2 mt-4">
+      {/* <div className="flex flex-1/2 mt-4">
         <Button className="">
           <ChevronLeft className="w-4 h-4 m-2" />
           Previous
@@ -58,7 +58,7 @@ export default async function page({
           <ChevronRight className="w-4 h-4 m-2" />
           Next
         </Button>
-      </div>
+      </div> */}
 
       {/* Student Question Form */}
       <StudentQuestionForm
