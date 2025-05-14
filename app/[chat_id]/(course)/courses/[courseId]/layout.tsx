@@ -14,16 +14,17 @@ const CourseLayout = async ({
   const student = await prisma.wpos_wpdatatable_23.findFirst({
     where: {
       chat_id: chat_id,
-      status: { in: ["active", "Not Yet"] },
+      status: { in: ["active", "NotYet"] },
     },
   });
   const studentId = student?.wdt_ID;
-  const studentName = student?.name ? student.name : "";
-  const studentStatus = student?.status ? student.status : "";
-  const studentSubject = student?.subject ? student.subject : "";
   if (!studentId) {
     return redirect("/");
   }
+  const studentName = student?.name ? student.name : "";
+  const studentStatus = student?.status ? student.status : "";
+  const studentSubject = student?.subject ? student.subject : "";
+  
 
   const course = await prisma.course.findUnique({
     where: {

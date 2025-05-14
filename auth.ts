@@ -1,55 +1,10 @@
-import { JWT } from "next-auth/jwt";
-import NextAuth, { type DefaultSession } from "next-auth";
+import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import prisma from "./lib/db";
 import { redirect } from "next/navigation";
-declare module "next-auth/jwt" {
-  /** Returned by the `jwt` callback and `auth`, when using JWT sessions */
-  interface JWT {
-    /** OpenID ID Token */
-    idToken?: string;
-  }
-}
-declare module "next-auth" {
-  /**
-   * Returned by `auth`, `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
-   */
-  interface Session {
-    user: {
-      /** The user's postal address. */
-      address: string;
-      /**
-       * By default, TypeScript merges new interface properties and overwrites existing ones.
-       * In this case, the default session user properties will be overwritten,
-       * with the new ones defined above. To keep the default session user properties,
-       * you need to add them back into the newly declared interface.
-       */
-    } & DefaultSession["user"];
-  }
-}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  //  By default, the `id` property does not exist on `token` or `session`. See the [TypeScript](https://authjs.dev/getting-started/typescript) on how to add it.
   callbacks: {
-    //  By default, the `id` property does not exist on `token` or `session`. See the [TypeScript](https://authjs.dev/getting-started/typescript) on how to add it.
-    jwt({ token, user }) {
-      if (user) {
-        // User is available during sign-in
-        token.id = user.id;
-      }
-      return token;
-    },
-    session({ session, token, user }) {
-      // `session.user.address` is now a valid property, and will be type-checked
-      // in places like `useSession().data.user` or `auth().user`
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: user.id,
-        },
-      };
-    },
     authorized({ auth, request: { url } }) {
       if (!auth) {
         if (url.includes("/teacher")) return false;
@@ -57,11 +12,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return true;
     },
+    jwt({ token, user }) {
+      return { ...token, ...user };
+    },
+    session({ session, token }) {
+      return { ...session, user: { ...session.user, ...token } };
+    },
   },
   providers: [
     Credentials({
-      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-      // e.g. domain, username, password, 2FA token, etc.
       credentials: {
         phoneno: { name: "phoneno", type: "text", placeholder: "Phone Number" },
         passcode: {
@@ -90,3 +49,92 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
 });
+
+// import NextAuth from "next-auth";
+// import Credentials from "next-auth/providers/credentials";
+// import prisma from "./lib/db";
+// import { DefaultJWT } from "next-auth/jwt";
+// import { loginSchema } from "./lib/zodSchema";
+
+// declare module "next-auth" {
+//   interface User {
+//     id?: string | undefined;
+//     phoneno?: string | null | undefined;
+//     passcode?: string | undefined;
+//   }
+//   interface Session {
+//     user: {
+//       id?: string;
+//       phoneno?: string | null;
+//       // ...other properties
+//     };
+//   }
+// }
+// declare module "next-auth/jwt" {
+//   interface JWT extends DefaultJWT {
+//     id: string;
+//     phoneno: string;
+//   }
+// }
+
+// export const { handlers, signIn, signOut, auth } = NextAuth({
+//   //  By default, the `id` property does not exist on `token` or `session`. See the [TypeScript](https://authjs.dev/getting-started/typescript) on how to add it.
+//   session: {
+//     strategy: "jwt",
+//   },
+//   callbacks: {
+//     async jwt({ token, user }) {
+//       if (user) {
+//         token.id = user.id ?? "";
+//         token.phoneno = user.phoneno ?? "";
+//       }
+//       return token;
+//     },
+//     async session({ session, token }) {
+//       session.user.id = token.id;
+//       session.user.phoneno = token.phoneno;
+//       return session;
+//     },
+//     authorized({ auth, request: { url } }) {
+//       if (!auth) {
+//         if (url.includes("/teacher")) return false;
+//         else return true;
+//       }
+//       return true;
+//     },
+//   },
+//   providers: [
+//     Credentials({
+//       // You can specify which fields should be submitted, by adding keys to the `credentials` object.
+//       // e.g. domain, username, password, 2FA token, etc.
+//       credentials: {
+//         phoneno: { name: "phoneno", type: "text", placeholder: "Phone Number" },
+//         passcode: {
+//           name: "passcode",
+//           type: "password",
+//           placeholder: "Passcode",
+//         },
+//       },
+
+//       async authorize(credentials) {
+//         const { phoneno, passcode } = await loginSchema.parseAsync(credentials);
+//         const user = await prisma.admin.findFirst({
+//           where: { phoneno },
+//           select: { id: true, phoneno: true, passcode: true },
+//         });
+//         if (!user) throw new Error("Invalid phoneno");
+
+//         console.log("DB passcode:", user.passcode);
+//         console.log("Input passcode:", passcode);
+//         if (!(passcode == user.passcode)) {
+//           console.log("Invalid password.");
+//           throw new Error("Invalid password.");
+//         }
+
+//         return user;
+
+//         // student
+//       },
+//     }),
+//   ],
+// });

@@ -19,6 +19,7 @@ import Link from "next/link";
 import StudentGraph from "./studetGraph";
 
 function Page() {
+  
   const takencoursePercent = 80; // Example percentage
   return (
     <>

@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { BadgeCheckIcon, UserCheckIcon } from "lucide-react";
+import { BadgeCheckIcon, CircleCheck, UserCheckIcon } from "lucide-react";
 // import { Button } from "@/components/ui/button";
 // import Link from "next/link";
 import { BookOpenCheck } from "lucide-react";
@@ -25,7 +25,7 @@ function CourseData() {
               <div className="text-5xl font-bold">
                 <span className="text-orange-500">
                   {" "}
-                  <BookOpenCheck />
+                  <CircleCheck />
                 </span>
                 100 <span className="text-xl text-gray-500">courses</span>
               </div>
@@ -41,7 +41,7 @@ function CourseData() {
         {/* the second card */}
         <Card>
           <CardHeader>
-            <CardTitle>completted</CardTitle>
+            <CardTitle>completed</CardTitle>
           </CardHeader>
 
           <CardContent className="flex justify-between items-center">

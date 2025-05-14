@@ -105,8 +105,8 @@ export async function unlockingNextChapter(
     } else {
       noOfTrial += 1;
       if (noOfTrial == 3) {
-        showAnswer(chapterId);
         noOfTrial = 0;
+        return await showAnswer(chapterId);
       }
       console.log("you Fail the exam:", chapterId);
       const failed = "you Failed the exam";

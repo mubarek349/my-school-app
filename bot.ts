@@ -1,22 +1,52 @@
 import { Bot } from "grammy";
-// const bot = new Bot("7334590788:AAEBnVc_gQx9y9ZijOD_FdQNRbAQN5-Q6Vg"); // <-- put your bot token between the ""
-const bot = new Bot("7894751055:AAFypK7odBkl9RdWDqYNb23SgasI9JU_NEA"); // <-- put your bot token between the ""
+import prisma from "@/lib/db";
+import { InlineKeyboard } from "grammy";
+
+// Replace this with your public domain or use an environment variable
+const BASE_URL =
+  process.env.PUBLIC_URL || "https://ts8zrvv2-3000.euw.devtunnels.ms/";
+
+const bot = new Bot("7894751055:AAFypK7odBkl9RdWDqYNb23SgasI9JU_NEA");
 
 export async function startBot() {
-  // Create an instance of the `Bot` class and pass your bot token to it.
+  bot.command("start", async (ctx) => {
+    const chatId = ctx.chat?.id;
 
-  // You can now register listeners on your bot object `bot`.
-  // grammY will call the listeners when users send messages to your bot.
+    if (!chatId) {
+      return ctx.reply("Unable to retrieve chat ID.");
+    }
 
-  // Handle the /start command.
-  bot.command("start", (ctx) => ctx.reply("Welcome! Up and running."));
-  // Handle other messages.
+    const channel = await prisma.wpos_wpdatatable_23.findFirst({
+      where: {
+        chat_id: chatId.toString(),
+        status: { in: ["active", "notyet"] },
+      },
+    });
+
+    if (channel) {
+      const url = `${BASE_URL}/${chatId}/search`;
+
+      const keyboard = new InlineKeyboard().url("📚 Open Course Page", url);
+
+      return ctx.reply(
+        "✅ Welcome! Click the button below to access your courses:",
+        {
+          reply_markup: keyboard,
+        }
+      );
+    } else {
+      return ctx.reply(
+        "🚫 You are not authorized to access the course platform."
+      );
+    }
+  });
+
   bot.on("message", (ctx) => ctx.reply("Got another message!"));
 
-  // Now that you specified how to handle messages, you can start your bot.
-  // This will connect to the Telegram servers and wait for messages.
+  bot.catch((err) => {
+    console.error("Error in middleware:", err);
+  });
 
-  // Start the bot.
   bot.start();
 }
 
@@ -27,5 +57,3 @@ export default async function sendMessage(chat_id: number, message: string) {
     console.error("Failed to send initial message:", err);
   }
 }
-
-startBot();

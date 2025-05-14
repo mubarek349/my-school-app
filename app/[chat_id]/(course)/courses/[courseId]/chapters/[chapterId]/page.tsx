@@ -48,6 +48,7 @@ export default async function page({
       </div>
 
       {/* Navigation buttons */}
+      
       <div className="flex flex-1/2 mt-4">
         <Button className="">
           <ChevronLeft className="w-4 h-4 m-2" />

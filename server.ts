@@ -31,7 +31,7 @@ app.prepare().then(async () => {
   await startBot();
   httpServer.listen(port, hostname, () => {
     console.log(
-      `> Server listening at http://${hostname}:${port} as ${
+      `> Server listening at https://${hostname}:${port} as ${
         process.env.NODE_ENV ?? "development"
       }`
     );
