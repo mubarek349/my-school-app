@@ -1,34 +1,67 @@
-import { prisma } from "../../Darulkubra-academy/lib/db";
+import prisma from "@/lib/db";
 
 (async () => {
   // Seed Admin
   await prisma.admin.create({
     data: {
+      id: "clg1v2j4f0000l5v8xq3z7h4d",
       name: "admin",
       phoneno: "0911111111",
-      passcode: "admin123",
+      passcode: "admin",
     },
   });
 
-  // Seed Teacher
-  const teacher = await prisma.teacher.create({
+  // Seed coursepackage
+  await prisma.coursePackage.create({
     data: {
-      name: "teacher",
-      phoneno: "0910101010",
-      passcode: "teacher123",
-      isActive: true,
+      id:"1",
+      userId: "clg1v2j4f0000l5v8xq3z7h4d",
+      title: "Qaida Package",
+      userType: "GENERAL",
+    },
+  });
+  // Seed course
+  await prisma.course.create({
+    data: {
+      title: "fiqh",
+      description: "da",
+      order:1,
+    },
+  });
+
+  const course = await prisma.course.create({
+    data: {
+      title: "hadith",
+      userType: "GENERAL",
+    },
+  }); const course = await prisma.course.create({
+    data: {
+      title: "fiqh",
+      userType: "GENERAL",
+    },
+  }); const course = await prisma.course.create({
+    data: {
+      title: "fiqh",
+      userType: "GENERAL",
+    },
+  });
+  // Seed chapter
+  const chapter = await prisma.chapter.create({
+    data: {
+      userId: "clg1v2j4f0000l5v8xq3z7h4d",
+      title: "Qaida Package",
+      userType: "GENERAL",
     },
   });
 
   // Seed Student
-  await prisma.student.create({
+  await prisma.wpos_wpdatatable_23.create({
     data: {
       name: "student",
       passcode: "student123",
       phoneno: "0942303571",
-      status: true,
-      startDate: new Date(),
-      chatId: "973677019",
+      status: "active",
+      chat_id: "973677019",
     },
   });
 

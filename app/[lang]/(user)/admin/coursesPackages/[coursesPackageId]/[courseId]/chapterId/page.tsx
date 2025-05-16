@@ -9,10 +9,9 @@ import {
   Video,
 } from "lucide-react";
 import { IconBadge } from "@/components/icon-badge";
-import { ChapterTitleForm } from "./_components/chapter-title-form";
-import { ChapterAccessForm } from "../../../../../../../../components/custom/chapter-access-form";
-import { ChapterVideoForm } from "./_components/chapter-video-form";
-import { ChapterQuestionForm } from "../../../../../../../../components/custom/chapter-question-form";
+import { ChapterTitleForm } from "@/components/custom/chapter-title-form"; 
+import { ChapterVideoForm } from "@/components/custom/chapter-video-form";
+import { ChapterQuestionForm } from "@/components/custom/chapter-question-form";
 
 const ChapterIdPage = async ({
   params,

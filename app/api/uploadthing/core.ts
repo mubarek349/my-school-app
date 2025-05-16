@@ -1,12 +1,25 @@
+import { auth } from "@/auth";
+import { isTeacher } from "@/lib/teacher";
+import { redirect } from "next/navigation";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 
 const f = createUploadthing();
 
 // const auth = (req: Request) => ({ id: "fakeId" }); // Fake auth function
 
-const handleAuth = () =>{
-    const userId="clg1v2j4f0000l5v8xq3z7h4d"; // Replace with actual userId from context
-    if (!userId) throw new Error ("Unauthorized");
+const handleAuth = async() =>{
+    const session = await auth();
+    
+      if (!session?.user) {
+        
+        return redirect("/"); // Ensure no further rendering occurs
+      }
+    
+      const userId = session.user.id;
+      if(!isTeacher(userId))
+        return redirect("/");
+       
+    // if (!userId) throw new Error ("Unauthorized");
     return {userId};
 }
 

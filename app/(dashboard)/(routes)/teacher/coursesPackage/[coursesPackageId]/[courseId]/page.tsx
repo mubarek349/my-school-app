@@ -66,8 +66,8 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
             <IconBadge icon={LayoutDashboard} />
             <h2 className="text-xl">coustomize your course</h2>
           </div>
-          <TitleForm initialData={course} coursesPackageId={course.id} />
-          <DescriptionForm initialData={course} coursesPackageId={course.id} />
+          <TitleForm initialData={course} courseId={course.id} />
+          <DescriptionForm initialData={course} courseId={course.id} />
           <ImageForm initialData={course} courseId={course.id} />
         </div>
       </div>

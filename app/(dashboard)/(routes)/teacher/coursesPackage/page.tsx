@@ -1,18 +1,17 @@
-import { getCourses } from "@/actions/student/course";
-import { CreatedCoursesList } from "@/components/teachers-course-package-list";
+import { getCourses } from "@/actions/get-courses";
+import { CreatedCoursePackageList } from "@/components/teachers-course-package-list";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-const CoursesPage = async () => {
-  const lang = ["en", "am"];
-  const courses = await getCourses();
+const CreatedCoursePackageList = async () => {
+  const coursePackage = await getCourses();
   return (
     <div className="p-6 overflow-auto">
-      <Link href={`/${lang}/teacher/create`}>
+      <Link href="/teacher/create">
         <Button>Create Course</Button>
       </Link>
       <div>
-        <CreatedCoursesList courses={courses} />
+        <CreatedCoursePackageList coursePackage={coursePackage} />
       </div>
     </div>
   );
