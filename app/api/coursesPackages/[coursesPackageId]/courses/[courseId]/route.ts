@@ -6,9 +6,14 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { coursePackageId : string; courseId : string} }
-) {
+  {
+    params,
+  }: { params: Promise<{ coursesPackageId: string; courseId: string }> }
+) //   context: { params: { userId: string } }
+{
   try {
+    const { coursesPackageId } = await params;
+    const { courseId } = await params;
     // const {userId} = auth();
 
     const session = await auth();
@@ -30,18 +35,18 @@ export async function PATCH(
 
     const updatedCourse = await prisma.course.update({
       where: {
-        id: params.courseId,
-        packageId: params.coursePackageId
+        id: courseId,
+        packageId: coursesPackageId,
       },
       data: {
         ...values,
       },
-  });
-  console.log("Updated Course", updatedCourse);
+    });
+    console.log("Updated Course", updatedCourse);
 
     return NextResponse.json(updatedCourse);
-      } catch (error) {
-        console.log("[PACKAGES_cOURSE_ID]", error);
-        return new NextResponse("Internal Error", { status: 500 });
-      }
-    }
+  } catch (error) {
+    console.log("[PACKAGES_cOURSE_ID]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}

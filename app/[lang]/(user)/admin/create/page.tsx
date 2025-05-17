@@ -35,12 +35,12 @@ const CreatePage = () => {
   });
 
 const { isSubmitting, isValid } = form.formState;
-
+const lang="en";
 const onSubmit = async (values: z.infer<typeof formSchema>) => {
   try {
-    const response = await axios.post("/api/coursesPackage", values);
-    router.push(`/teacher/coursesPackage/${response.data.id}`);
-    toast.success("Course created successfully");
+    const response = await axios.post("/api/coursesPackages", values);
+    router.push(`/${lang}/admin/coursesPackages/${response.data.id}`);
+    toast.success("Course Package created successfully");
   } catch {
     toast.error("something went wrong");
   }
@@ -49,7 +49,7 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
 return (
   <div className="max-w-5xl mx-auto flex md:items-center md:justify-center h-full p-6 overflow-auto">
     <div>
-      <h1 className="text-2xl">Name of your course Package</h1>
+      <h1 className="text-2xl">Name of your Course Package</h1>
       <p>
         What would you like to name your course package? Don&apos;t worry, you can
         change this later.

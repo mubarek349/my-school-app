@@ -26,6 +26,7 @@ interface ChapterQuestionFormProps {
   initialData: chapter & { questions: question[] };
   courseId: string;
   chapterId: string;
+  coursesPackageId:string;
 }
 
 const formSchema = z.object({
@@ -42,6 +43,7 @@ export const ChapterQuestionForm = ({
   initialData,
   courseId,
   chapterId,
+  coursesPackageId,
 }: ChapterQuestionFormProps) => {
   const [isCreating, setIsCreating] = useState(false);
   //   const [isUpdating, setIsUpdating] = useState(false);
@@ -71,7 +73,7 @@ export const ChapterQuestionForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.post(
-        `/api/courses/${courseId}/chapters/${chapterId}/questions`,
+        `/api/coursesPackages/${coursesPackageId}/courses/${courseId}/chapters/${chapterId}/questions`,
         values
       );
       form.reset();
@@ -87,7 +89,7 @@ export const ChapterQuestionForm = ({
   const onDelete = async (id: string) => {
     try {
       await axios.delete(
-        `/api/courses/${courseId}/chapters/${chapterId}/questions/${id}`
+        `/api/coursesPackages/${coursesPackageId}/courses/${courseId}/chapters/${chapterId}/questions/${id}`
       );
       toast.success("Question Deleted");
       router.refresh();
@@ -96,9 +98,11 @@ export const ChapterQuestionForm = ({
       toast.error("Failed to delete the question.");
     }
   };
-
+const lang="en";
   const onEdit = (id: string) => {
-    router.push(`/teacher/courses/${courseId}/chapters/${id}/questions/${id}`);
+    router.push(
+      `/${lang}/admin/coursesPackages/${coursesPackageId}/${courseId}/${chapterId}/${id}`
+    );
   };
 
   return (

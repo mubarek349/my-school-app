@@ -1,7 +1,7 @@
 "use server";
-import { correctAnswer } from "@/actions/get-result";
 import prisma from "@/lib/db";
-import { showAnswer } from "./show-answers";
+import { correctAnswer } from "./question";
+import { showAnswer } from "./question";
 import sendMessage from "@/bot";
 let noOfTrial = 0;
 export async function unlockingNextChapter(
@@ -82,10 +82,10 @@ export async function unlockingNextChapter(
 
       if (nextChapter) {
         console.log("Unlocking next chapter with id:", nextChapter.id);
-        await prisma.chapter.update({
-          where: { id: nextChapter.id, position: prevChapter.position + 1 },
-          data: { isFree: true },
-        });
+        // await prisma.chapter.update({
+        //   where: { id: nextChapter.id, position: prevChapter.position + 1 },
+        //   data: { isFree: true },
+        // });
       } else {
         const course = await prisma.course.findFirst({
           where: {
@@ -118,8 +118,6 @@ export async function unlockingNextChapter(
 }
 
 
-"use server";
-import prisma from "@/lib/db";
 
 export async function getchapter(courseId: string, chat_id: string) {
   console.log("course >>", courseId);

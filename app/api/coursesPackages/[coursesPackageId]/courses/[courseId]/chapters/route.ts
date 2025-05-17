@@ -6,11 +6,13 @@ import { NextResponse } from "next/server";
 
 export async function POST(
   req: Request,
-  {params}: { params: {coursePackageId: string, courseId: string } }
+  {params}: { params: Promise<{coursesPackageId: string, courseId: string }> }
 //   context: { params: { userId: string } }
 ) {
   try {
-    // const userId = context.params.userId;
+    const { coursesPackageId } = await params;
+    const { courseId } = await params;
+    // const userId = context.userId;
     const session = await auth();
 
     if (!session?.user) {
@@ -27,7 +29,7 @@ export async function POST(
 
     const coursePackageOwner = await prisma.coursePackage.findUnique({
       where: {
-        id: params.coursePackageId,
+        id: coursesPackageId,
         userId: userId,
       },
     });
@@ -40,7 +42,7 @@ export async function POST(
 
     const lastChapter = await prisma.chapter.findFirst({
       where: {  
-        courseId: params.courseId,
+        courseId: courseId,
       },
         orderBy: {
             position: "desc",
@@ -51,7 +53,7 @@ export async function POST(
     const createdChapter = await prisma.chapter.create({
       data: {
         title,
-        courseId: params.courseId,
+        courseId: courseId,
         position: newPosition,
       },
     });

@@ -9,10 +9,18 @@ export async function PATCH(
   {
     params,
   }: {
-    params: { coursePackageId: string; courseId: string; chapterId: string };
+    params: Promise<{
+      coursesPackageId: string;
+      courseId: string;
+      chapterId: string;
+    }>;
   }
 ) {
   try {
+    const { coursesPackageId } = await params;
+    const { courseId } = await params;
+    const { chapterId } = await params;
+
     // const userId = "clg1v2j4f0000l5v8xq3z7h4d"; // Replace with actual userId from context
     const session = await auth();
 
@@ -30,8 +38,8 @@ export async function PATCH(
 
     const coursePackageOwner = await prisma.coursePackage.findUnique({
       where: {
-        id: params.coursePackageId,
-        userId: userId,
+        id: coursesPackageId,
+        userId,
       },
     });
 
@@ -40,24 +48,17 @@ export async function PATCH(
     }
     const chapter = await prisma.chapter.findUnique({
       where: {
-        id: params.chapterId,
-        courseId: params.courseId,
+        id: chapterId,
       },
     });
-    if (
-      !chapter ||
-      !chapter.title ||
-      !chapter.videoUrl ||
-      !chapter.description
-    ) {
+    if (!chapter || !chapter.title || !chapter.videoUrl) {
       return new NextResponse("Chapter not found or missing title", {
         status: 404,
       });
     }
     const publishedChapter = await prisma.chapter.update({
       where: {
-        id: params.chapterId,
-        courseId: params.courseId,
+        id: chapterId,
       },
       data: {
         isPublished: true,

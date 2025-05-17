@@ -1,17 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormField,
+  FormMessage,
   FormControl,
   FormItem,
-  FormDescription,
 } from "@/components/ui/form";
-import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { chapter } from "@prisma/client";
 import axios from "axios";
 import { Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -20,21 +18,23 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
 
-interface ChapterAccessFormProps {
-  initialData: chapter;
+interface CourseTitleFormProps {
+  initialData: {
+    title: string;
+  };
   courseId: string;
-  chapterId: string;
+  coursesPackageId:string;
 }
 
 const formSchema = z.object({
-  isFree: z.boolean().default(false),
+  title: z.string().min(1, { message: "Title is required" }),
 });
 
-export const ChapterAccessForm = ({
+export const CourseTitleForm = ({
   initialData,
   courseId,
-  chapterId,
-}: ChapterAccessFormProps) => {
+  coursesPackageId,
+}: CourseTitleFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
 
@@ -42,7 +42,7 @@ export const ChapterAccessForm = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { isFree: initialData.isFree ?? false }, // Ensure `isFree` is always a boolean
+    defaultValues: { title: initialData?.title || "" }, // Ensure default values
   });
 
   const { isSubmitting, isValid } = form.formState;
@@ -50,11 +50,10 @@ export const ChapterAccessForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/courses/${courseId}/chapters/${chapterId}`,
+        `/api/coursesPackages/${coursesPackageId}/courses/${courseId}`,
         values
       );
-
-      toast.success("Course Access Updated");
+      toast.success("Cours Title Updated");
       toggleEdit();
       router.refresh();
     } catch (error) {
@@ -66,33 +65,19 @@ export const ChapterAccessForm = ({
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Chapter Access
+        Course  Title
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             "Cancel"
           ) : (
             <>
-              <Pencil className="w-4 h-4 mr-2" /> Edit Access
+              <Pencil className="w-4 h-4 mr-2" /> Edit title
             </>
           )}
         </Button>
       </div>
 
-      {!isEditing && (
-        <p
-          className={cn(
-            "text-sm mt-2",
-            !initialData.isFree && "text-slate-500 italic"
-          )}
-        >
-          {initialData.isFree ? (
-            <>This chapter is free for preview.</>
-          ) : (
-            <>This Chapter is not free</>
-          )}
-        </p>
-      )}
-
+      {!isEditing && <p className="text-sm mt-2">{initialData.title}</p>}
       {isEditing && (
         <Form {...form}>
           <form
@@ -101,20 +86,17 @@ export const ChapterAccessForm = ({
           >
             <FormField
               control={form.control}
-              name="isFree"
+              name="title"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormItem>
                   <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
+                    <Input
+                      disabled={isSubmitting}
+                      placeholder="e.g. 'Qaidetu nuraniya course'"
+                      {...field}
                     />
                   </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormDescription>
-                      Mark this chapter as free and accessible to everyone.
-                    </FormDescription>
-                  </div>
+                  <FormMessage />
                 </FormItem>
               )}
             />

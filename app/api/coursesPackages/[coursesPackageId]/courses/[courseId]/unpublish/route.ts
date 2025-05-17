@@ -9,10 +9,13 @@ export async function PATCH(
   {
     params,
   }: {
-    params: { coursePackageId: string; courseId: string };
+    params: Promise<{ coursesPackageId: string; courseId: string }>;
   }
-) {
+) //   context: { params: { userId: string } }
+{
   try {
+    const { coursesPackageId } = await params;
+    const { courseId } = await params;
     // const userId = "clg1v2j4f0000l5v8xq3z7h4d"; // Replace with actual userId from context
     const session = await auth();
 
@@ -30,7 +33,7 @@ export async function PATCH(
 
     const coursePackageOwner = await prisma.coursePackage.findUnique({
       where: {
-        id: params.coursePackageId,
+        id: coursesPackageId,
         userId: userId,
       },
     });
@@ -38,12 +41,10 @@ export async function PATCH(
     if (!coursePackageOwner) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    
-    
+
     const unpublishedcourse = await prisma.course.update({
       where: {
-        id: params.courseId,
-        packageId: params.coursePackageId,
+        id: courseId,
       },
       data: {
         isPublished: false,

@@ -5,9 +5,13 @@ import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 export async function PUT(
   req: Request,
-  { params }: { params: { coursePackageId: string } }
-) {
+  {
+    params,
+  }: { params: Promise<{ coursesPackageId: string; }> }
+) //   context: { params: { userId: string } }
+{
   try {
+    const { coursesPackageId } = await params;
     // const userId = "clg1v2j4f0000l5v8xq3z7h4d";
     const session = await auth();
 
@@ -27,7 +31,7 @@ export async function PUT(
     const { list } = await req.json();
     const coursePackageOwner = await prisma.coursePackage.findUnique({
       where: {
-        id: params.coursePackageId,
+        id: coursesPackageId,
         userId: userId,
       },
     });

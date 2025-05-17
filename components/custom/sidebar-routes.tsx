@@ -7,12 +7,12 @@ const teacherRoutes = [
   {
     icon: List,
     label: "Courses",
-    href: "/teacher/courses",
+    href: "/en/admin/courses",
   },
   {
     icon: BarChart,
     label: "Analytics",
-    href: "/teacher/analytics",
+    href: "/en/admin/analytics",
   },
 ];
 export const SidebarRoutes = () => {

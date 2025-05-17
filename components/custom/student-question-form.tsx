@@ -1,5 +1,5 @@
 "use client";
-import { unlockingNextChapter } from "@/actions/unlocking-next-chapter";
+import { unlockingNextChapter } from "@/actions/student/chapter";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";

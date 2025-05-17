@@ -8,9 +8,10 @@ import {
   FormControl,
   FormItem,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { chapter } from "@prisma/client";
+import {  course } from "@prisma/client";
 import axios from "axios";
 import { Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -19,23 +20,21 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
 
-interface ChapterVideoFormProps {
-  initialData: chapter;
+interface CourseDescriptionFormProps {
+  initialData: course;
+  coursesPackageId: string;
   courseId: string;
-  chapterId: string;
-  coursesPackageId:string;
 }
 
 const formSchema = z.object({
-  videoUrl: z.string().min(1),
+  description: z.string().min(1, { message: "description is required" }),
 });
 
-export const ChapterVideoForm = ({
+export const CourseDescriptionForm = ({
   initialData,
-  courseId,
-  chapterId,
   coursesPackageId,
-}: ChapterVideoFormProps) => {
+  courseId,
+}: CourseDescriptionFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
 
@@ -43,7 +42,7 @@ export const ChapterVideoForm = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { videoUrl: initialData?.videoUrl || "" }, // Ensure default values
+    defaultValues: { description: initialData?.description || "" }, // Ensure default values
   });
 
   const { isSubmitting, isValid } = form.formState;
@@ -51,10 +50,10 @@ export const ChapterVideoForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/coursesPackages/${coursesPackageId}/courses/${courseId}/chapters/${chapterId}`,
+        `/api/coursesPackages/${coursesPackageId}/courses/${courseId}`,
         values
       );
-      toast.success("Chapter Updated");
+      toast.success("Course Description Updated");
       toggleEdit();
       router.refresh();
     } catch (error) {
@@ -66,19 +65,29 @@ export const ChapterVideoForm = ({
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Chapter video
+        Courses Description
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             "Cancel"
           ) : (
             <>
-              <Pencil className="w-4 h-4 mr-2" /> Edit the Video Link
+              <Pencil className="w-4 h-4 mr-2" /> Edit Description
             </>
           )}
         </Button>
       </div>
 
-      {!isEditing && <p className="text-sm mt-2">{initialData.videoUrl}</p>}
+      {!isEditing && (
+        <p
+          className={cn(
+            "text-sm mt-2",
+            !initialData.description && "text-slate-500 italic"
+          )}
+        >
+          {initialData.description || "No description"}
+        </p>
+      )}
+
       {isEditing && (
         <Form {...form}>
           <form
@@ -87,13 +96,13 @@ export const ChapterVideoForm = ({
           >
             <FormField
               control={form.control}
-              name="videoUrl"
+              name="description"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
+                    <Textarea
                       disabled={isSubmitting}
-                      placeholder="e.g. 'DKReTrqoS1I'"
+                      placeholder="e.g. This course is about... "
                       {...field}
                     />
                   </FormControl>

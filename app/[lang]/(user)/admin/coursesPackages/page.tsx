@@ -2,12 +2,12 @@ import { getCoursesPackages } from "@/actions/admin/package";
 import { CreatedCoursePackageList } from "@/components/teachers-course-package-list";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-
+const lang="en";
 const coursesPackagePage = async () => {
   const coursesPackages = await getCoursesPackages();
   return (
     <div className="p-6 overflow-auto">
-      <Link href="/teacher/create">
+      <Link href={`/${lang}/admin/create`}>
         <Button>Create Course</Button>
       </Link>
       <div>

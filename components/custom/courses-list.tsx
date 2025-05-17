@@ -1,48 +1,106 @@
 "use client";
-import { LucideIcon } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+
+import {  course } from "@prisma/client";
+import { useEffect, useState } from "react";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "@hello-pangea/dnd";
+import { Grip, Pencil } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-interface SidebarItemProps {
-  icon: LucideIcon;
-  label: string;
-  href: string;
+
+interface CoursesListProps {
+  items: course[];
+  onReorder: (updateData: { id: string; position: number }[]) => void;
+  onEdit: (id: string) => void;
 }
-export const CoursesList = ({ icon: Icon, label, href }: SidebarItemProps) => {
-  const pathname = usePathname();
-  const router = useRouter();
+export const CoursesList = ({ items, onReorder, onEdit }: CoursesListProps) => {
+  const [isMounted, setIsMounted] = useState(false);
+  const [courses, setCourses] = useState(items);
 
-  const isActive =
-    (pathname === "/" && href === "/") ||
-    pathname === href ||
-    pathname?.startsWith(`${href}/`);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-  const onClick = () => {
-    router.push(href);
+  useEffect(() => {
+    setCourses(items);
+  }, [items]);
+
+  const onDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+
+    const items = Array.from(courses);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    const startIndex = Math.min(result.source.index, result.destination.index);
+    const endIndex = Math.max(result.source.index, result.destination.index);
+    const updatedCourses = items.slice(startIndex, endIndex + 1);
+    setCourses(items);
+    const bulkUpdateData = updatedCourses.map((course) => ({
+      id: course.id,
+      position: items.findIndex((item) => item.id === course.id),
+    }));
+    onReorder(bulkUpdateData);
   };
+
+  if (!isMounted) {
+    return null;
+  }
+
   return (
-    <button
-      onClick={onClick}
-      type="button"
-      className={cn(
-        "flex items-center gap-x-2 text-slate-500 text-sm font-medium pl-6 transition-all hover:text-slate-600 hover:bg-slate-300/20",
-        isActive &&
-          "text-sky-700 bg-sky-200/20 hover:bg-sky-200/20 hover:text-sky-700"
-      )}
-    >
-      <div className="flex items-center gap-x-2 py-4">
-        <Icon
-          size={22}
-          className={cn("text-slate-500", isActive && "text-sky-700")}
-        />
-        {label}
-      </div>
-      <div
-        className={cn(
-          "ml-auto opacity-0 border-2 border-sky-700 transition-all h-14",
-          isActive && "opacity-100"
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable droppableId="courses">
+        {(provided) => (
+          <div {...provided.droppableProps} ref={provided.innerRef}>
+            {courses.map((course, index) => (
+              <Draggable key={course.id} draggableId={course.id} index={index}>
+                {(provided) => (
+                  <div
+                    className={cn(
+                      "flex items-center gap-x-2 bg-slate-200 border-slate-200 border text-slate-700 rounded-md mb-4 text-sm",
+                      course.isPublished &&
+                        "bg-sky-100 border-sky-200 text-sky-700"
+                    )}
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                  >
+                    <div
+                      className={cn(
+                        "px-2 py-3 border-r border-r-slate-200 hover:bg-slate-300 rounded-l-md transiton",
+                        course.isPublished &&
+                          "border-r-sky-200 hover:bg-sky-200"
+                      )}
+                      {...provided.dragHandleProps}
+                    >
+                      <Grip className="h-5 w-5" />
+                    </div>
+                    {course.title}
+                    <div className="ml-auto pr-2 flex items-center gap-x-2">
+                      <Badge
+                        className={cn(
+                          "bg-slate-500",
+                          course.isPublished && "bg-sky-700"
+                        )}
+                      >
+                        {course.isPublished ? "Published" : "Draft"}
+                      </Badge>
+                      <Pencil
+                        onClick={() => onEdit(course.id)}
+                        className="w-4 h-4 cursor-pointer hover:opacity-75 transition"
+                      />
+                    </div>
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
+          </div>
         )}
-      />
-    </button>
+      </Droppable>
+    </DragDropContext>
   );
 };

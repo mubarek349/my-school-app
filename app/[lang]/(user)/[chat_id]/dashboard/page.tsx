@@ -1,5 +1,5 @@
 import { getCoursesWithProgress } from "@/actions/student/course";
-import { CoursesList } from "@/components/courses-list-for-student";
+import { CoursesList } from "@/components/courses-package-list-for-student";
 import prisma from "@/lib/db";
 import { redirect } from "next/navigation";
 import CourseData from "../../../../../components/custom/course-data";

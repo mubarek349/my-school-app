@@ -87,10 +87,9 @@ export const ChaptersList = ({
                       <Grip className="h-5 w-5" />
                     </div>
                     {chapter.title}
-                    <div className="ml-auto pr-2 flex items-center gap-x-2">
-                      {chapter.isFree && (<Badge className="bg-green-700">Opened</Badge>)}
-                      {!chapter.isFree && (<Badge className="bg-red-700">Closed</Badge>)}
 
+                    <div className="ml-auto pr-2 flex items-center gap-x-2">
+                      {chapter.position}
                       <Badge
                         className={cn(
                           "bg-slate-500",
@@ -99,6 +98,7 @@ export const ChaptersList = ({
                       >
                         {chapter.isPublished ? "Published" : "Draft"}
                       </Badge>
+
                       <Pencil
                         onClick={() => onEdit(chapter.id)}
                         className="w-4 h-4 cursor-pointer hover:opacity-75 transition"

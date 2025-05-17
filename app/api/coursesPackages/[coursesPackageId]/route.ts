@@ -2,12 +2,15 @@ import { auth } from "@/auth";
 import prisma from "@/lib/db";
 import { isTeacher } from "@/lib/teacher";
 import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { coursePackageId: string } }
+  { params }: { params: Promise<{ coursesPackageId: string }> }
 ) {
   try {
+    const { coursesPackageId } = await params;
+    // ...existing code...
     // const {userId} = auth();
 
     const session = await auth();
@@ -29,19 +32,16 @@ export async function PATCH(
 
     const updatedCoursePackage = await prisma.coursePackage.update({
       where: {
-        id: params.coursePackageId,
-        userId,
+        id: coursesPackageId,
       },
       data: {
         ...values,
       },
     });
-
-    return new Response(JSON.stringify(updatedCoursePackage), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    console.log("the updated Package is  : ", updatedCoursePackage);
+    return NextResponse.json(updatedCoursePackage);
   } catch (error) {
     console.error("Error updating course:", error);
+    return new NextResponse("Internal Error", { status: 500 });
   }
 }

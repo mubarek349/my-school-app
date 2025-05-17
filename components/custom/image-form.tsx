@@ -1,8 +1,7 @@
 "use client";
-
+import * as z from "zod";
 import { FileUpload } from "@/components/file-upload";
 import { Button } from "@/components/ui/button";
-
 import { course } from "@prisma/client";
 import axios from "axios";
 import { ImageIcon, Pencil, PlusCircle } from "lucide-react";
@@ -10,28 +9,33 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { z } from "zod";
+
 
 interface ImageFormProps {
   initialData: course;
   courseId: string;
+  coursesPackageId:string;
 }
 
 const formSchema = z.object({
   imageUrl: z.string().min(1, { message: "Image is required" }),
 });
 
-export const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
+export const ImageForm = ({ initialData, courseId,coursesPackageId }: ImageFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
+
   const router = useRouter();
 
   const toggleEdit = () => setIsEditing((prev) => !prev);
 
-  
+
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${courseId}`, values);
+      await axios.patch(
+        `/api/coursesPackages/${coursesPackageId}/courses/${courseId}`,
+        values
+      );
       toast.success("Course Updated");
         toggleEdit();
       router.refresh();

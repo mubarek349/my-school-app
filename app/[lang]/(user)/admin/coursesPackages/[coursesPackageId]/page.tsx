@@ -7,12 +7,14 @@ import { TitleForm } from "../../../../../../components/custom/title-form";
 import { DescriptionForm } from "../../../../../../components/custom/description-form";
 import { auth } from "@/auth";
 import { isTeacher } from "@/lib/teacher";
+import { CoursesForm } from "@/components/custom/courses-form";
 
 const CoursesPackageIdPage = async ({
   params,
 }: {
-  params: { coursesPackageId: string };
+  params: Promise<{ coursesPackageId: string }>;
 }) => {
+  const { coursesPackageId }=await params;
   // const {userId} = auth();
   const session = await auth();
 
@@ -25,7 +27,7 @@ const CoursesPackageIdPage = async ({
 
   const coursesPackage = await prisma.coursePackage.findUnique({
     where: {
-      id: params.coursesPackageId,
+      id: coursesPackageId,
       userId,
     },
     include: {
@@ -40,7 +42,7 @@ const CoursesPackageIdPage = async ({
   const requiredFields = [
     coursesPackage.title,
     coursesPackage.description,
-    coursesPackage.userType,
+    // coursesPackage.userType,
     coursesPackage.courses,
   ];
 

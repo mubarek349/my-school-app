@@ -19,18 +19,23 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
-import { ChaptersList } from "../../app/(dashboard)/(routes)/teacher/courses/[courseId]/_components/chapters-list";
+import { ChaptersList } from "./chapters-list";
 
 interface ChaptersFormProps {
   initialData: course & { chapters: chapter[] };
   courseId: string;
+  coursesPackageId:string;
 }
 
 const formSchema = z.object({
   title: z.string().min(1),
 });
-
-export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
+const lang="en";
+export const ChaptersForm = ({
+  initialData,
+  courseId,
+  coursesPackageId,
+}: ChaptersFormProps) => {
   const [isCreating, setIsCreating] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -47,7 +52,10 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post(`/api/courses/${courseId}/chapters`, values);
+      await axios.post(
+        `/api/coursesPackages/${coursesPackageId}/courses/${courseId}/chapters`,
+        values
+      );
       toast.success("Chapter Created");
       toggleCreating();
       router.refresh();
@@ -60,9 +68,12 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
   const onReorder = async (updateData: { id: string; position: number }[]) => {
     try {
       setIsUpdating(true);
-      await axios.put(`/api/courses/${courseId}/chapters/reorder`, {
-        list: updateData,
-      });
+      await axios.put(
+        `/api/coursesPackages/${coursesPackageId}/courses/${courseId}/chapters/reorder`,
+        {
+          list: updateData,
+        }
+      );
       toast.success("Chapters reordered");
       router.refresh();
     } catch {
@@ -73,7 +84,9 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
   };
 
   const onEdit = (id: string) => {
-    router.push(`/teacher/courses/${courseId}/chapters/${id}`);
+    router.push(
+      `/${lang}/admin/coursesPackages/${coursesPackageId}/${courseId}/${id}`
+    );
   };
   return (
     <div className="relative mt-6 border bg-slate-100 rounded-md p-4">

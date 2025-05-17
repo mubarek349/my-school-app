@@ -11,7 +11,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { chapter, course, coursePackage } from "@prisma/client";
+import { course, coursePackage } from "@prisma/client";
 import axios from "axios";
 import { Loader2, PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -21,7 +21,7 @@ import toast from "react-hot-toast";
 import { z } from "zod";
 import { CoursesList } from "./courses-list";
 
-interface ChaptersFormProps {
+interface CoursesFormProps {
   initialData: coursePackage & { courses: course[] };
   coursesPackageId: string;
 }
@@ -30,12 +30,15 @@ const formSchema = z.object({
   title: z.string().min(1),
 });
 
-export const ChaptersForm = ({ initialData, coursesPackageId }: ChaptersFormProps) => {
+export const CoursesForm = ({
+  initialData,
+  coursesPackageId,
+}: CoursesFormProps) => {
   const [isCreating, setIsCreating] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
   const toggleCreating = () => setIsCreating((current) => !current);
-
+  const lang = "en";
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -47,8 +50,11 @@ export const ChaptersForm = ({ initialData, coursesPackageId }: ChaptersFormProp
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post(`/api/coursesPackages/${coursesPackageId}/courses`, values);
-      toast.success("Chapter Created");
+      await axios.post(
+        `/api/coursesPackages/${coursesPackageId}/courses`,
+        values
+      );
+      toast.success("Course Created");
       toggleCreating();
       router.refresh();
     } catch (error) {
@@ -60,10 +66,13 @@ export const ChaptersForm = ({ initialData, coursesPackageId }: ChaptersFormProp
   const onReorder = async (updateData: { id: string; position: number }[]) => {
     try {
       setIsUpdating(true);
-      await axios.put(`/api/courses/${courseId}/chapters/reorder`, {
-        list: updateData,
-      });
-      toast.success("Chapters reordered");
+      await axios.put(
+        `/api/coursesPackages/${coursesPackageId}/courses/reorder`,
+        {
+          list: updateData,
+        }
+      );
+      toast.success("Courses reordered");
       router.refresh();
     } catch {
       toast.error("Something went wrong");
@@ -73,7 +82,7 @@ export const ChaptersForm = ({ initialData, coursesPackageId }: ChaptersFormProp
   };
 
   const onEdit = (id: string) => {
-    router.push(`/teacher/courses/${courseId}/chapters/${id}`);
+    router.push(`/${lang}/admin/coursesPackages/${coursesPackageId}/${id}`);
   };
   return (
     <div className="relative mt-6 border bg-slate-100 rounded-md p-4">
@@ -83,13 +92,13 @@ export const ChaptersForm = ({ initialData, coursesPackageId }: ChaptersFormProp
         </div>
       )}
       <div className="font-medium flex items-center justify-between">
-        Course chapters
+        Courses of the Package
         <Button onClick={toggleCreating} variant="ghost">
           {isCreating ? (
             <>Cancel</>
           ) : (
             <>
-              <PlusCircle className="w-4 h-4 mr-2" /> Add a chapter
+              <PlusCircle className="w-4 h-4 mr-2" /> Add Course
             </>
           )}
         </Button>
@@ -129,20 +138,20 @@ export const ChaptersForm = ({ initialData, coursesPackageId }: ChaptersFormProp
         <div
           className={cn(
             "text-sm mt-2",
-            !initialData.chapters.length && "text-slate-500 italic"
+            !initialData.courses.length && "text-slate-500 italic"
           )}
         >
-          {!initialData.chapters.length && " NO chapters"}
-          <ChaptersList
+          {!initialData.courses.length && " NO Courses"}
+          <CoursesList
             onEdit={onEdit}
             onReorder={onReorder}
-            items={initialData.chapters || []}
+            items={initialData.courses || []}
           />
         </div>
       )}
       {!isCreating && (
         <p className="text-xs mt-4 text-muted-foreground">
-          Drag and drop to reorder chapters.
+          Drag and drop to reorder Courses.
         </p>
       )}
     </div>

@@ -5,22 +5,21 @@ import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 
 export async function POST(
-  req: Request,
-//   context: { params: { userId: string } }
+  req: Request
+  //   context: { params: { userId: string } }
 ) {
   try {
     // const userId = context.params.userId;
     const session = await auth();
-        
-          if (!session?.user) {
-            
-            return redirect("/"); // Ensure no further rendering occurs
-          }
-        
-          const userId = session.user.id?session.user.id:"";
-          if(!isTeacher(userId))
-            return redirect("/");
-            // Replace with actual userId from context
+
+    if (!session?.user) {
+      console.log("there is no session");
+      return redirect("/"); // Ensure no further rendering occurs
+    }
+
+    const userId = session.user.id ? session.user.id : "";
+    if (!isTeacher(userId)) return redirect("/");
+    // Replace with actual userId from context
     const { title } = await req.json();
     // if (!userId) {
     //   return new NextResponse("Unauthorized", { status: 401 });

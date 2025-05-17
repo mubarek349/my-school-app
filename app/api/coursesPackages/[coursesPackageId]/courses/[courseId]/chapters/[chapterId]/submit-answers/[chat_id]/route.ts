@@ -21,7 +21,7 @@ export async function POST(
 
     // const courseId = (await params).courseId;
     // const chapterId = (await params).chapterId;
-    const chat_id = (await params).chat_id;
+    const {chat_id} = await params;
 
     const answerPromises = await Promise.all(
       Object.entries(answers).map(async ([questionId, optionId]) => {

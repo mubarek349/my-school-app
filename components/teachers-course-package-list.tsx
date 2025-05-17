@@ -12,7 +12,7 @@ interface AllCoursesPackage {
 interface CreatedCoursePackageListProps {
   coursesPackages: AllCoursesPackage[];
 }
-
+const lang="en";
 export const CreatedCoursePackageList = ({
   coursesPackages,
 }: CreatedCoursePackageListProps) => {
@@ -21,7 +21,7 @@ export const CreatedCoursePackageList = ({
       {coursesPackages.map((coursesPackage) => (
         <Link
           key={coursesPackage.id}
-          href={`/teacher/coursesPackages/${coursesPackage.id}`}
+          href={`/${lang}/admin/coursesPackages/${coursesPackage.id}`}
           className="bg-gray-100 rounded-xl p-5 flex flex-col course-card"
         >
           <h2 className="text-xl font-bold">{coursesPackage.title}</h2>

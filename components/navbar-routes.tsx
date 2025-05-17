@@ -22,7 +22,7 @@ export const NavbarRoutes = ({
   const isTeacherPage = pathname?.startsWith("/teacher");
   const isCoursePage = pathname?.includes(`/${chat_id}`);
 
-
+const lang="en";
   const onClick = () => {
     router.push("/");
   };
@@ -50,7 +50,7 @@ export const NavbarRoutes = ({
             <span className="text-sm">Exit</span>
           </Button>
         ) : (
-          <Link href="/teacher/courses">
+          <Link href={`/${lang}/admin/courses`}>
             <Button
               size="sm"
               variant="ghost"

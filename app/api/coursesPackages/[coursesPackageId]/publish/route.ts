@@ -4,15 +4,16 @@ import { isTeacher } from "@/lib/teacher";
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 
-export async function POST(
+export async function PATCH(
   req: Request,
-  //   context: { params: { userId: string } }
-  { params }: { params: Promise<{ coursesPackageId: string }> }
+  {
+    params,
+  }: {
+    params: Promise<{ coursesPackageId: string }>;
+  }
 ) {
   try {
     const { coursesPackageId } = await params;
-
-    // const userId = context.userId;
     // const userId = "clg1v2j4f0000l5v8xq3z7h4d"; // Replace with actual userId from context
     const session = await auth();
 
@@ -24,7 +25,6 @@ export async function POST(
     if (!isTeacher(userId)) return redirect("/");
     // Replace with actual userId from context
 
-    const { title } = await req.json();
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
@@ -39,29 +39,32 @@ export async function POST(
     if (!coursePackageOwner) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const lastCourseInthePackage = await prisma.course.findFirst({
+    const coursesPackage = await prisma.coursePackage.findUnique({
       where: {
-        packageId: coursesPackageId,
-      },
-      orderBy: {
-        order: "desc",
+        id: coursesPackageId,
       },
     });
-
-    const newPosition = lastCourseInthePackage
-      ? lastCourseInthePackage.order + 1
-      : 1;
-    const createdCourse = await prisma.course.create({
+    if (
+      !coursesPackage ||
+      !coursesPackage.title ||
+      !coursesPackage.description
+    ) {
+      return new NextResponse("Chapter not found or missing title", {
+        status: 404,
+      });
+    }
+    const publishedCoursesPackage = await prisma.coursePackage.update({
+      where: {
+        id: coursesPackageId,
+      },
       data: {
-        title,
-        packageId: coursesPackageId,
-        order: newPosition,
+        isPublished: true,
       },
     });
-    console.log("created Course :", createdCourse);
-    return NextResponse.json(createdCourse);
+    console.log("publishedCourse: ", publishedCoursesPackage);
+    return NextResponse.json(publishedCoursesPackage);
   } catch (error) {
-    console.error("[COURSES]", error);
+    console.log("[publishedCourse]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

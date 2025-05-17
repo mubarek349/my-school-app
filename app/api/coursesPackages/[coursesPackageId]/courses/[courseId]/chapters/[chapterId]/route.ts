@@ -9,29 +9,27 @@ export async function DELETE(
   {
     params,
   }: {
-    params: { coursePackageId: string; courseId: string; chapterId: string };
+    params: Promise<{
+      coursesPackageId: string;
+      courseId: string;
+      chapterId: string;
+    }>;
   }
 ) {
   try {
-    // const userId = "clg1v2j4f0000l5v8xq3z7h4d"; // Replace with actual userId from context
-    const session = await auth();
+    const { coursesPackageId, courseId, chapterId } = await params;
 
-    if (!session?.user) {
-      return redirect("/"); // Ensure no further rendering occurs
-    }
+    const session = await auth();
+    if (!session?.user) return redirect("/");
 
     const userId = session.user.id ? session.user.id : "";
     if (!isTeacher(userId)) return redirect("/");
-    // Replace with actual userId from context
 
-    if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
-
+    // Check course package ownership
     const coursePackageOwner = await prisma.coursePackage.findUnique({
       where: {
-        id: params.coursePackageId,
-        userId: userId,
+        id: coursesPackageId,
+        userId,
       },
     });
 
@@ -39,34 +37,35 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // Check if chapter exists
     const chapter = await prisma.chapter.findUnique({
       where: {
-        id: params.chapterId,
-        courseId: params.courseId,
+        id: chapterId,
       },
     });
     if (!chapter) {
       return new NextResponse("Chapter Not found", { status: 404 });
     }
+
+    // Delete the chapter
     const deletedChapter = await prisma.chapter.delete({
       where: {
-        id: params.chapterId,
+        id: chapterId,
       },
     });
 
-    // Check if there are any published chapters left in the course
+    // Optionally: Unpublish course if no published chapters remain
     const publishedChaptersInCourse = await prisma.chapter.count({
       where: {
-        courseId: params.courseId,
+        courseId: courseId,
         isPublished: true,
       },
     });
 
     if (publishedChaptersInCourse === 0) {
-      // Unpublish the course if no published chapters remain
       await prisma.course.update({
         where: {
-          id: params.courseId,
+          id: courseId,
         },
         data: {
           isPublished: false,
@@ -86,10 +85,18 @@ export async function PATCH(
   {
     params,
   }: {
-    params: { coursePackageId: string; courseId: string; chapterId: string };
+    params: Promise<{
+      coursesPackageId: string;
+      courseId: string;
+      chapterId: string;
+    }>;
   }
 ) {
   try {
+    const { coursesPackageId } = await params;
+    // const { courseId } = await params;
+    const { chapterId } = await params;
+
     // const userId = "clg1v2j4f0000l5v8xq3z7h4d"; // Replace with actual userId from context
     const session = await auth();
 
@@ -107,7 +114,7 @@ export async function PATCH(
 
     const coursePackageOwner = await prisma.coursePackage.findUnique({
       where: {
-        id: params.coursePackageId,
+        id: coursesPackageId,
         userId: userId,
       },
     });
@@ -120,8 +127,7 @@ export async function PATCH(
 
     const chapter = await prisma.chapter.update({
       where: {
-        id: params.chapterId,
-        courseId: params.courseId,
+        id: chapterId,
       },
       data: {
         ...values,
@@ -132,7 +138,7 @@ export async function PATCH(
     // if (values.videoUrl) {
     //   const existingMuxData = await prisma.muxData.findFirst({
     //     where: {
-    //       chapterId: params.chapterId,
+    //       chapterId: chapterId,
     //     },
     //   });
     //   if (existingMuxData) {
@@ -150,7 +156,7 @@ export async function PATCH(
     //   });
     //   await prisma.muxData.create({
     //     data: {
-    //       chapterId: params.chapterId,
+    //       chapterId: chapterId,
     //       assetId: asset.id,
     //       playbackId: asset.playback_ids?.[0]?.id,
     //     },
