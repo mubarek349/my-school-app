@@ -56,7 +56,7 @@ export const CourseMobileSidebar = ({
             sidebar={sidebar}
             setSidebar={setSidebar}
           />
-        </Sidebar>
+        </S>
       </SheetContent>
     </Sheet>
   );

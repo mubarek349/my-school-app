@@ -1,7 +1,7 @@
 "use client";
 
 import { Trash } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "@/lib/ui/button";
 import { ConfirmModal } from "../modals/confirm-modal";
 import { useState } from "react";
 import axios from "axios";

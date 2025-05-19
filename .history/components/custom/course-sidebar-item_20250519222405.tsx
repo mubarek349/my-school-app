@@ -10,7 +10,7 @@ interface CourseSidebarItemProps {
   courseId: string;
   isStarted: boolean;
   chat_id: string;
-  coursesPackageId:string;
+  coursesPackageId: string;
   setSidebar: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -27,7 +27,7 @@ export const CourseSidebarItem = ({
   const pathname = usePathname();
   const router = useRouter();
 
-  const Icon = isStarted ? (isCompleted ? CheckCircle : PlayCircle):Lock;
+  const Icon = isStarted ? (isCompleted ? CheckCircle : PlayCircle) : Lock;
   const isActive = pathname?.includes(id);
 
   const onClick = () => {

@@ -8,6 +8,7 @@ import {
 } from "@prisma/client";
 import { CourseSidebarItem } from "./course-sidebar-item";
 
+
 import { cn } from "@/lib/utils";
 
 interface CourseSidebarProps {
@@ -20,6 +21,8 @@ interface CourseSidebarProps {
   };
   chat_id: string;
 
+ 
+
   sidebar: boolean;
   setSidebar: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -27,10 +30,11 @@ interface CourseSidebarProps {
 export const CourseSidebar = ({
   coursesPackage,
   chat_id,
-
+  
   sidebar,
   setSidebar,
 }: CourseSidebarProps) => {
+ 
   return (
     <div
       className={cn(
@@ -41,27 +45,18 @@ export const CourseSidebar = ({
       )}
     >
       <div className="flex flex-col w-full overflow-auto">
-        {Array.isArray(coursesPackage?.courses) &&
-        coursesPackage.courses.length > 0 ? (
-          coursesPackage.courses.map((course) => {
-            const firstChapter = course.chapters?.[0];
-            return (
-              <CourseSidebarItem
-                key={course.id}
-                id={course.id}
-                label={course.title}
-                isCompleted={!!firstChapter?.studentProgress?.[0]?.isCompleted}
-                courseId={course.id}
-                isStarted={!!firstChapter?.studentProgress?.[0]?.isStarted}
-                chat_id={chat_id}
-                coursesPackageId={coursesPackage.id}
-                setSidebar={setSidebar}
-              />
-            );
-          })
-        ) : (
-          <div className="p-4 text-gray-500">No courses found.</div>
-        )}
+        <CourseSidebarItem
+          key={course.id}
+          id={course.id}
+          label={course.title}
+          isCompleted={!!firstChapter?.studentProgress?.[0]?.isCompleted}
+          courseId={course.id}
+          isStarted={!!firstChapter?.studentProgress?.[0]?.isStarted}
+          chat_id={chat_id}
+          coursesPackageId={coursesPackage.id}
+          setSidebar={setSidebar}
+        />
+        
       </div>
     </div>
   );

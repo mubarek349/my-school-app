@@ -5,12 +5,13 @@ import { showAnswer } from "./question";
 import sendMessage from "@/bot";
 let noOfTrial = 0;
 export async function unlockingNextChapter(
+  coursesPackageId:string,
   courseId: string,
   chapterId: string,
   chat_id: string
 ) {
   try {
-    if (!chapterId || !chat_id || !courseId) {
+    if (!chapterId || !chat_id || !courseId || !coursesPackageId) {
       console.error("Invalid input: chapterId or chat_id is missing.");
       throw new Error("Invalid input: chapterId and chat_id are required.");
     }
@@ -40,7 +41,7 @@ export async function unlockingNextChapter(
     console.log("Fetching previous chapter with id:", chapterId);
     const prevChapter = await prisma.chapter.findUnique({
       where: { id: chapterId },
-      select: { position: true },
+      select: { position: true,studentProgress:{select:{isStarted:true,isCompleted:true}} },
     });
 
     if (!prevChapter) {
@@ -145,7 +146,6 @@ export async function getchapter(courseId: string, chat_id: string) {
 
   let chapter = await prisma.chapter.findFirst({
     where: {
-      isFree: true,
       courseId: courseId,
       studentProgress: { none: { student: { chat_id } } },
     },
@@ -155,7 +155,6 @@ export async function getchapter(courseId: string, chat_id: string) {
   if (!chapter) {
     chapter = await prisma.chapter.findFirst({
       where: {
-        isFree: true,
         courseId: courseId,
         studentProgress: { some: { student: { chat_id } } },
       },

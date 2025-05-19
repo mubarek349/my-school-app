@@ -109,4 +109,9 @@ export const CoursesPackageActions = ({
 };
 
 
+  return (
+    <div className="relative">
+      <Button onClick={handleClick}>Trigger Side Cannons</Button>
+    </div>
+  );
 

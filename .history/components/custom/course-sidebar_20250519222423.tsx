@@ -6,9 +6,10 @@ import {
   coursePackage,
   studentProgress,
 } from "@prisma/client";
-import { CourseSidebarItem } from "./course-sidebar-item";
 
-import { cn } from "@/lib/utils";
+import { CourseSidebarItem } from "./CourseSidebarItem";
+
+
 
 interface CourseSidebarProps {
   coursesPackage: coursePackage & {
@@ -20,6 +21,8 @@ interface CourseSidebarProps {
   };
   chat_id: string;
 
+ 
+
   sidebar: boolean;
   setSidebar: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -27,10 +30,11 @@ interface CourseSidebarProps {
 export const CourseSidebar = ({
   coursesPackage,
   chat_id,
-
+  
   sidebar,
   setSidebar,
 }: CourseSidebarProps) => {
+ 
   return (
     <div
       className={cn(

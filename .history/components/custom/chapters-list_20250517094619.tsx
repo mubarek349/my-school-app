@@ -12,6 +12,7 @@ import { Grip, Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
+
 interface ChaptersListProps {
   items: chapter[];
   onReorder: (updateData: { id: string; position: number }[]) => void;

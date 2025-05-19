@@ -8,10 +8,9 @@ interface CourseSidebarItemProps {
   id: string;
   isCompleted: boolean;
   courseId: string;
-  isStarted: boolean;
+  isLocked: boolean;
   chat_id: string;
-  coursesPackageId:string;
-  setSidebar: React.Dispatch<React.SetStateAction<boolean>>;
+  coursesPackageId;
 }
 
 export const CourseSidebarItem = ({
@@ -19,27 +18,25 @@ export const CourseSidebarItem = ({
   id,
   isCompleted,
   courseId,
-  isStarted,
+  isLocked,
   chat_id,
   coursesPackageId,
-  setSidebar,
 }: CourseSidebarItemProps) => {
   const pathname = usePathname();
   const router = useRouter();
 
-  const Icon = isStarted ? (isCompleted ? CheckCircle : PlayCircle):Lock;
+  const Icon = isLocked ? Lock : isCompleted ? CheckCircle : PlayCircle;
   const isActive = pathname?.includes(id);
 
   const onClick = () => {
-    setSidebar((prev) => !prev);
-    router.push(`/en/${chat_id}/${coursesPackageId}/${courseId}/${id}`);
+    router.push(`/${chat_id}/courses/${courseId}/chapters/${id}`);
   };
 
   return (
     <button
       onClick={onClick}
       type="button"
-      disabled={!isStarted}
+      disabled={isLocked}
       className={cn(
         "flex items-center gap-x-2 text-slate-500 text-sm font-medium pl-6 transition-all hover:text-slate-600",
         "hover:bg-slate-300/20 lg:pl-8",
