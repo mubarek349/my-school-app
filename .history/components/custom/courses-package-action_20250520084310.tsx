@@ -7,7 +7,7 @@ import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import confetti from "canvas-confetti";
+import { Confetti } from "../magicui/confetti";
 
 interface coursesPackageActionsProps {
   disabled: boolean;
@@ -44,7 +44,7 @@ export const CoursesPackageActions = ({
           const frame = () => {
             if (Date.now() > end) return;
        
-            confetti({
+            Confetti({
               particleCount: 2,
               angle: 60,
               spread: 55,
@@ -107,7 +107,6 @@ export const CoursesPackageActions = ({
     </div>
   );
 };
-
 
 
 

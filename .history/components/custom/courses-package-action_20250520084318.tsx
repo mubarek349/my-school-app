@@ -7,7 +7,6 @@ import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import confetti from "canvas-confetti";
 
 interface coursesPackageActionsProps {
   disabled: boolean;
@@ -107,7 +106,6 @@ export const CoursesPackageActions = ({
     </div>
   );
 };
-
 
 
 

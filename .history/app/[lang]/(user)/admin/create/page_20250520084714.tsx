@@ -58,6 +58,7 @@ const CreatePage = () => {
     <div>
       {success && (
         <Confetti
+          eight={height}
           numberOfPieces={200}
           recycle={false}
         />

@@ -21,6 +21,7 @@ import toast from "react-hot-toast";
 import { ArrowLeft, Loader2, CheckCircle2, Info } from "lucide-react";
 import { useState } from "react";
 import Confetti from "react-confetti";
+import { useWindowSize } from "react-use";
 
 const formSchema = z.object({
   title: z.string().min(1, {
@@ -32,6 +33,7 @@ const CreatePage = () => {
   const router = useRouter();
   const [success, setSuccess] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  const { width, height } = useWindowSize();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,6 +60,8 @@ const CreatePage = () => {
     <div>
       {success && (
         <Confetti
+          width={width}
+          height={height}
           numberOfPieces={200}
           recycle={false}
         />

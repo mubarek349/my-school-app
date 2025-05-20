@@ -7,19 +7,20 @@ import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import confetti from "canvas-confetti";
 
-interface coursesPackageActionsProps {
+interface CourseActionsProps {
   disabled: boolean;
+  courseId: string;
   isPublished: boolean;
   coursesPackageId: string;
 }
 
-export const CoursesPackageActions = ({
+export const CourseActions = ({
   disabled,
+  courseId,
   isPublished,
   coursesPackageId,
-}: coursesPackageActionsProps) => {
+}: CourseActionsProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -28,43 +29,17 @@ export const CoursesPackageActions = ({
       setIsLoading(true);
       if (isPublished) {
         await axios.patch(
-          `/api/coursesPackages/${coursesPackageId}/unpublish`
+          `/api/coursesPackages/${coursesPackageId}/courses/${courseId}/unpublish`
         );
-        toast.success("coursesPackage unpublished");
+        toast.success("course unpublished");
         router.refresh();
       } else {
-        await axios.patch(
-          `/api/coursesPackages/${coursesPackageId}/publish`
+       await axios.patch(
+          `/api/coursesPackages/${coursesPackageId}/courses/${courseId}/publish`
         );
-        toast.success("coursesPackage published");
-        
-          const end = Date.now() + 3 * 1000; // 3 seconds
-          const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
-       
-          const frame = () => {
-            if (Date.now() > end) return;
-       
-            confetti({
-              particleCount: 2,
-              angle: 60,
-              spread: 55,
-              startVelocity: 60,
-              origin: { x: 0, y: 0.5 },
-              colors: colors,
-            });
-            confetti({
-              particleCount: 2,
-              angle: 120,
-              spread: 55,
-              startVelocity: 60,
-              origin: { x: 1, y: 0.5 },
-              colors: colors,
-            });
-       
-            requestAnimationFrame(frame);
-          };
-       
-          frame();
+        // if(!successed)
+        // toast.error("it is not publish");
+        toast.success("course published");
         
         router.refresh();
       }
@@ -78,11 +53,11 @@ export const CoursesPackageActions = ({
     try {
       setIsLoading(true);
       await axios.delete(
-        `/api/coursesPackages/${coursesPackageId}`
+        `/api/coursesPackages/${coursesPackageId}/courses/${courseId}`
       );
-      toast.success("coursesPackage deleted");
+      toast.success("course deleted");
       router.refresh();
-      router.push(`/en/admin/coursesPackages`);
+      router.push(`/en/admin/coursesPackages/${coursesPackageId}`);
     } catch {
       toast.error("something went wrong");
     } finally {
@@ -107,7 +82,3 @@ export const CoursesPackageActions = ({
     </div>
   );
 };
-
-
-
-

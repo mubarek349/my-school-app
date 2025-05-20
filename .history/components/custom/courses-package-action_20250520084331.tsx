@@ -7,7 +7,6 @@ import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import confetti from "canvas-confetti";
 
 interface coursesPackageActionsProps {
   disabled: boolean;
@@ -110,4 +109,7 @@ export const CoursesPackageActions = ({
 
 
 
+function confetti(arg0: { particleCount: number; angle: number; spread: number; startVelocity: number; origin: { x: number; y: number; }; colors: string[]; }) {
+  throw new Error("Function not implemented.");
+}
 

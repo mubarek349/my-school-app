@@ -32,6 +32,7 @@ const CreatePage = () => {
   const router = useRouter();
   const [success, setSuccess] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  const { width, height } = useWindowSize();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,6 +59,8 @@ const CreatePage = () => {
     <div>
       {success && (
         <Confetti
+          width={width}
+          height={height}
           numberOfPieces={200}
           recycle={false}
         />

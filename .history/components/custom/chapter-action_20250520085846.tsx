@@ -7,21 +7,22 @@ import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import confetti from "canvas-confetti";
 
-interface CourseActionsProps {
+interface ChapterActionsProps {
   disabled: boolean;
   courseId: string;
+  chapterId: string;
   isPublished: boolean;
   coursesPackageId: string;
 }
 
-export const CourseActions = ({
+export const ChapterActions = ({
   disabled,
   courseId,
   isPublished,
   coursesPackageId,
-}: CourseActionsProps) => {
+  chapterId,
+}: ChapterActionsProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -30,17 +31,15 @@ export const CourseActions = ({
       setIsLoading(true);
       if (isPublished) {
         await axios.patch(
-          `/api/coursesPackages/${coursesPackageId}/courses/${courseId}/unpublish`
+          `/api/coursesPackages/${coursesPackageId}/courses/${courseId}/chapters/${chapterId}/unpublish`
         );
-        toast.success("course unpublished");
+        toast.success("chapter unpublished");
         router.refresh();
       } else {
-       await axios.patch(
-          `/api/coursesPackages/${coursesPackageId}/courses/${courseId}/publish`
+        await axios.patch(
+          `/api/coursesPackages/${coursesPackageId}/courses/${courseId}/chapters/${chapterId}/publish`
         );
-        // if(!successed)
-        // toast.error("it is not publish");
-        toast.success("course published");
+        toast.success("chapter published");
         const end = Date.now() + 3 * 1000; // 3 seconds
                   const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
                
@@ -82,11 +81,11 @@ export const CourseActions = ({
     try {
       setIsLoading(true);
       await axios.delete(
-        `/api/coursesPackages/${coursesPackageId}/courses/${courseId}`
+        `/api/coursesPackages/${coursesPackageId}/courses/${courseId}/chapters/${chapterId}`
       );
-      toast.success("course deleted");
+      toast.success("chapter deleted");
       router.refresh();
-      router.push(`/en/admin/coursesPackages/${coursesPackageId}`);
+      router.push(`/en/admin/coursesPackages/${coursesPackageId}/${courseId}`);
     } catch {
       toast.error("something went wrong");
     } finally {

@@ -110,4 +110,7 @@ export const CoursesPackageActions = ({
 
 
 
+function confetti(arg0: { particleCount: number; angle: number; spread: number; startVelocity: number; origin: { x: number; y: number; }; colors: string[]; }) {
+  throw new Error("Function not implemented.");
+}
 
