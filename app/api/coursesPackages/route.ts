@@ -18,7 +18,7 @@ export async function POST(
     }
 
     const userId = session.user.id ? session.user.id : "";
-    if (!isTeacher(userId)) return redirect("/");
+    if (!isTeacher(userId)) return redirect("/en/admin");
     // Replace with actual userId from context
     const { title } = await req.json();
     // if (!userId) {

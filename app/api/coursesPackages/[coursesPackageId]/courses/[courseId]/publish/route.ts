@@ -11,8 +11,8 @@ export async function PATCH(
   }: {
     params: Promise<{ coursesPackageId: string; courseId: string }>;
   }
-) //   context: { params: { userId: string } }
-{
+) {
+  //   context: { params: { userId: string } }
   try {
     const { coursesPackageId } = await params;
     const { courseId } = await params;
@@ -47,19 +47,36 @@ export async function PATCH(
         packageId: coursesPackageId,
       },
     });
+
     if (!course || !course.title || !course.description) {
       return new NextResponse("Chapter not found or missing title", {
         status: 404,
       });
     }
+
+    const isthereanyPublishedChapter=await prisma.chapter.count({
+      where:{
+        courseId:course.id,
+        isPublished:true,
+      }
+
+    });
+    if(isthereanyPublishedChapter===0){
+      return new NextResponse(null);
+    }
     const publishedCourse = await prisma.course.update({
       where: {
-        id: courseId,
+        id: course?.id,
+        chapters: { some: { isPublished: true } },
       },
       data: {
         isPublished: true,
       },
     });
+    console.log("sjk", course?.id);
+ 
+      
+
     console.log("publishedCourse: ", publishedCourse);
     return NextResponse.json(publishedCourse);
   } catch (error) {

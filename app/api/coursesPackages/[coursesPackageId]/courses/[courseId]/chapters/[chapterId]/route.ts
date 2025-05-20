@@ -42,6 +42,7 @@ export async function DELETE(
       where: {
         id: chapterId,
       },
+      select:{courseId:true}
     });
     if (!chapter) {
       return new NextResponse("Chapter Not found", { status: 404 });
@@ -63,7 +64,7 @@ export async function DELETE(
     });
 
     if (publishedChaptersInCourse === 0) {
-      await prisma.course.update({
+      const updatedCourse=await prisma.course.update({
         where: {
           id: courseId,
         },
@@ -71,6 +72,7 @@ export async function DELETE(
           isPublished: false,
         },
       });
+      console.log("the course is updated",updatedCourse);
     }
 
     return NextResponse.json(deletedChapter);

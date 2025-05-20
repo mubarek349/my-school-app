@@ -10,13 +10,13 @@ export async function PUT(
   }: {
     params: Promise<{
       coursesPackageId: string;
-      courseId: string;
+      // courseId: string;
     }>;
   }
 ) {
   try {
     const { coursesPackageId } = await params;
-    const { courseId } = await params;
+    // const { courseId } = await params;
     const session = await auth();
 
     if (!session?.user) {
