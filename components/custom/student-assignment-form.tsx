@@ -3,41 +3,54 @@ import React, { useState } from "react";
 import Select from "react-select";
 import useAction from "@/hooks/useAction";
 import {
-  getStudent,
-  // getStudSubject,
-  setPackage,
+  assignPackage,
+  // getStudent,
+  getStudSubject,
+  // setPackage,
 } from "@/actions/admin/packageassign";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 function StudentAssignmentForm() {
   const { coursesPackageId } = useParams<{ coursesPackageId: string }>();
-  const [students] = useAction(getStudent, [true, () => {}], coursesPackageId);
-  // const [subjects] = useAction(getStudSubject, [true, () => {}]);
-  const [, addPackage, loading] = useAction(setPackage, [, () => {}]);
+  // const [students] = useAction(getStudent, [true, () => {}], coursesPackageId);
+  const [subjects] = useAction(getStudSubject, [true, () => {}]);
+  const router = useRouter();
+  const [, addPackage, loading] = useAction(assignPackage, [, () => {}]);
 
-  // const [selectedSubject, setSelectedSubject] = useState<string>("");
-  const [selectedStudents, setSelectedStudents] = useState<
-    { value: number; label: string }[]
+  const [selectedSubject, setSelectedSubject] = useState<
+    { value: string; label: string }[]
   >([]);
+  // const [selectedStudents, setSelectedStudents] = useState<
+  //   { value: number; label: string }[]
+  // >([]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const studentIds = selectedStudents.map((s) => Number(s.value));
-    console.log(studentIds);
+
+    const subjectId = selectedSubject.map((s) => s.label);
+    console.log(subjectId);
     (async () => {
-      await addPackage(coursesPackageId, studentIds);
-      toast.success("student assign successfully");
+      try {
+        await addPackage(coursesPackageId, subjectId);
+        toast.success("student assign successfully");
+        router.refresh();
+      } catch {
+        toast.error("student fail");
+        console.error("error");
+      }
     })();
   };
+  console.log("sucess");
+  toast.success("students assigned successfully");
 
   const studentOptions =
-    Array.isArray(students) && students.length > 0
-      ? students.map((student) => ({
-          value: student.wdt_ID,
-          label: student.name,
+    Array.isArray(subjects) && subjects.length > 0
+      ? subjects.map((subject) => ({
+          value: subject.subject,
+          label: subject.subject,
         }))
       : [];
 
@@ -64,14 +77,15 @@ function StudentAssignmentForm() {
         </select>
       </div> */}
       <div style={{ margin: "1rem 0" }}>
-        <label>Select Students:</label>
+        <label>Select Student&apos;s Subject to be assigned:</label>
         <Select
+          closeMenuOnSelect={false}
           isMulti
-          name="students"
+          name="subjects"
           options={studentOptions}
-          value={selectedStudents}
+          value={selectedSubject}
           onChange={(selected) =>
-            setSelectedStudents(selected as { value: number; label: string }[])
+            setSelectedSubject(selected as { value: string; label: string }[])
           }
           className="basic-multi-select"
           classNamePrefix="select"
