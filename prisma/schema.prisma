@@ -21,9 +21,9 @@ enum UserType {
 
 model coursePackage {
   id             String                @id @default(uuid())
-  userId         String
+  userId         String                @db.Text
   name           String                @db.Text
-  description    String?
+  description    String?               @db.Text
   userType       UserType              @default(GENERAL)
   courses        course[]
   isPublished    Boolean               @default(false)
@@ -170,8 +170,9 @@ model wpos_wpdatatable_23 {
   // History of all packages (many-to-many)
   packages       coursePackage[]   @relation("PackageHistory")
   // Active package (one-to-one or many-to-one)
-  subject        String?
-  activePackage  coursePackage?    @relation("ActivePackage", fields: [subject], references: [id])
+  subject        String
+  youtubeSubject String?
+  activePackage  coursePackage?    @relation("ActivePackage", fields: [youtubeSubject], references: [id])
   progress       studentProgress[]
   studentQuizzes studentQuiz[]
   chat_id        String            @unique

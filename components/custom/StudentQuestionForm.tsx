@@ -7,7 +7,7 @@ import { submitAnswers } from "@/actions/student/question";
 import { getstudentId } from "@/actions/student/dashboard";
 import { updatePathProgressData } from "@/actions/student/progress";
 import { toast } from "sonner";
-import { CheckCircle2Icon } from "lucide-react";
+import { CheckCircle2Icon, Loader2 } from "lucide-react";
 import Link from "next/link";
 
 // Add these SVG icons (or use your own)
@@ -96,7 +96,7 @@ const StudentQuestionForm = ({
 
   const studentIdString = String(getStudentById) || "";
 
-  const [, data] = useAction(submitAnswers, [
+  const [, data, submitloading] = useAction(submitAnswers, [
     ,
     (response) => console.log(response),
   ]);
@@ -240,8 +240,11 @@ const StudentQuestionForm = ({
             <div className="flex gap-4 mt-4">
               <Button
                 onClick={handleSubmit}
-                disabled={!allAnswered || showCorrect}
+                disabled={!allAnswered || showCorrect || submitloading}
               >
+                {submitloading ? (
+                  <Loader2 className="animate-spin mr-2" />
+                ) : null}
                 Submit Answers
               </Button>
               <Button

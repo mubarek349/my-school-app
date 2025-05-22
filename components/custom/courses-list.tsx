@@ -80,6 +80,7 @@ export const CoursesList = ({ items, onReorder, onEdit }: CoursesListProps) => {
                     </div>
                     {course.title}
                     <div className="ml-auto pr-2 flex items-center gap-x-2">
+                      {course.order}
                       <Badge
                         className={cn(
                           "bg-slate-500",

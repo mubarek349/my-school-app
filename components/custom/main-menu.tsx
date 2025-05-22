@@ -91,7 +91,7 @@ export default function MainMenu({ className }: { className?: string }) {
               <AccordionContent>
                 {course.chapters.map((chapter) => {
                   const isCompleted = chapterProgress?.[chapter.id];
-                  const chapterLink = `/en/${chatId}/${course.id}/${chapter.id}`;
+                  const chapterLink = `/en/student/${chatId}/${course.id}/${chapter.id}`;
                   return (
                     // <MenuItems
 

@@ -19,7 +19,7 @@ function MenuTitle() {
   const chatId = String(params.chatId);
 
   // Use useAction at the component level
-  const [progressData, , isLoading] = useAction(
+  const [progressData, refreshProgress, isLoading] = useAction(
     getActivePackageProgress,
     [true, (response) => console.log(response)],
     chatId
@@ -28,6 +28,13 @@ function MenuTitle() {
   const [progress, setProgress] = useState(0);
   const [completed, setCompleted] = useState(0);
   const [total, setTotal] = useState(1); // default to 1 to avoid division by zero
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      console.log("Auto-refreshing progress...");
+      refreshProgress();
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, [refreshProgress]);
 
   useEffect(() => {
     if (progressData && !isLoading) {

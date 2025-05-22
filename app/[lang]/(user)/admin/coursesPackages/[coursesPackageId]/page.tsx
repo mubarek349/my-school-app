@@ -11,7 +11,7 @@ import { CoursesForm } from "@/components/custom/courses-form";
 import { Banner } from "@/components/custom/banner";
 import { CoursesPackageActions } from "@/components/custom/courses-package-action";
 import Link from "next/link";
-import { StudentsAssignmentForm } from "@/components/custom/student-assignment-form";
+import  StudentAssignmentForm  from "@/components/custom/student-assignment-form";
 // import { StudentSelectionForm } from "@/components/custom/student-selection-form";
 
 const CoursesPackageIdPage = async ({
@@ -42,16 +42,13 @@ const CoursesPackageIdPage = async ({
   if (!coursesPackage) {
     return redirect("/");
   }
-// const students= await prisma.wpos_wpdatatable_23.findMany({
-//   where:{
-
-//   },
-//   select:{
-//     subject:true,
-//     wdt_ID:true,
-//   }
-// });
-
+  // const students = await prisma.wpos_wpdatatable_23.findMany({
+  //   where: {},
+  //   select: {
+  //     subject: true,
+  //     wdt_ID: true,
+  //   },
+  // });
 
   const requiredFields = [
     coursesPackage.name,
@@ -108,10 +105,10 @@ const CoursesPackageIdPage = async ({
               initialData={coursesPackage}
               coursesPackageId={coursesPackage.id}
             />
-            <StudentsAssignmentForm
-              // initialData={wpos_wpdatatable_23}
+            <div>{/* <h1>student list</h1> */}</div>
+            <StudentAssignmentForm
+              // initialData={students}
               // coursesPackageId={coursesPackage.id}
-              // students={students}
             />
           </div>
         </div>

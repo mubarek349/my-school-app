@@ -18,17 +18,17 @@ export async function getCoursesPackages() {
 
     const coursesPackages = await prisma.coursePackage.findMany({
       where: {
-        isPublished: true,
+        // isPublished: true,
       },
       include: {
         courses: {
           where: {
-            isPublished: true,
+            // isPublished: true,
           },
           include:{
             chapters:{
               where:{
-                isPublished:true,
+                // isPublished:true,
               }
             }
           }

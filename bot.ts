@@ -44,7 +44,7 @@ export async function startBot() {
       },
     });
     const lang = "en";
-    const stud = "stud";
+    const stud = "student";
 
     if (
       channel &&

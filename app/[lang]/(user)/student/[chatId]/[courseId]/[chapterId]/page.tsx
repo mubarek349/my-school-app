@@ -200,7 +200,7 @@ function Page() {
             </span>
           </div>
         ) : "message" in data ? (
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center m-0">
             <svg
               className="w-12 h-12 text-green-600 mb-4"
               fill="none"

@@ -321,8 +321,7 @@ export async function updatePathProgressData(chatId: string) {
           },
         };
       } else {
-        console.error("No chapters found for the first course.");
-        throw new Error("No chapters found for the first course.");
+        return null
       }
     }
 

@@ -1,141 +1,88 @@
-"use client"
-
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Check, ChevronsUpDown } from "lucide-react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-
-import { cn } from "@/lib/utils"
-import toast from "react-hot-toast"
-import { Button } from "@/components/ui/button"
+"use client";
+import React, { useState } from "react";
+import Select from "react-select";
+import useAction from "@/hooks/useAction";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+  getStudent,
+  // getStudSubject,
+  setPackage,
+} from "@/actions/admin/packageassign";
+import { useParams } from "next/navigation";
+import { Button } from "../ui/button";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
-const languages = [
-  { label: "English", value: "en" },
-  { label: "French", value: "fr" },
-  { label: "German", value: "de" },
-  { label: "Spanish", value: "es" },
-  { label: "Portuguese", value: "pt" },
-  { label: "Russian", value: "ru" },
-  { label: "Japanese", value: "ja" },
-  { label: "Korean", value: "ko" },
-  { label: "Chinese", value: "zh" },
-] as const
+function StudentAssignmentForm() {
+  const { coursesPackageId } = useParams<{ coursesPackageId: string }>();
+  const [students] = useAction(getStudent, [true, () => {}], coursesPackageId);
+  // const [subjects] = useAction(getStudSubject, [true, () => {}]);
+  const [, addPackage, loading] = useAction(setPackage, [, () => {}]);
 
-const FormSchema = z.object({
-  language: z.string({
-    required_error: "Please select a language.",
-  }),
-})
+  // const [selectedSubject, setSelectedSubject] = useState<string>("");
+  const [selectedStudents, setSelectedStudents] = useState<
+    { value: number; label: string }[]
+  >([]);
 
-export function StudentsAssignmentForm() {
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-  })
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const studentIds = selectedStudents.map((s) => Number(s.value));
+    console.log(studentIds);
+    (async () => {
+      await addPackage(coursesPackageId, studentIds);
+      toast.success("student assign successfully");
+    })();
+  };
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast(
-      <div>
-        <div className="font-bold mb-2">You submitted the following values:</div>
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      </div>
-    )
-  }
+  const studentOptions =
+    Array.isArray(students) && students.length > 0
+      ? students.map((student) => ({
+          value: student.wdt_ID,
+          label: student.name,
+        }))
+      : [];
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="language"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Language</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "w-[200px] justify-between",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value
-                        ? languages.find(
-                            (language) => language.value === field.value
-                          )?.label
-                        : "Select language"}
-                      <ChevronsUpDown className="opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
-                  <Command>
-                    <CommandInput
-                      placeholder="Search framework..."
-                      className="h-9"
-                    />
-                    <CommandList>
-                      <CommandEmpty>No framework found.</CommandEmpty>
-                      <CommandGroup>
-                        {languages.map((language) => (
-                          <CommandItem
-                            value={language.label}
-                            key={language.value}
-                            onSelect={() => {
-                              form.setValue("language", language.value)
-                            }}
-                          >
-                            {language.label}
-                            <Check
-                              className={cn(
-                                "ml-auto",
-                                language.value === field.value
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormDescription>
-                This is the language that will be used in the dashboard.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
+    <form onSubmit={handleSubmit}>
+      {/* <div>
+        <label>Select Subject:</label>
+        <select
+          value={selectedSubject}
+          onChange={(e) => setSelectedSubject(e.target.value)}
+        >
+          <option value="" disabled>
+            Select a subject
+          </option>
+          {Array.isArray(subjects) && subjects.length > 0 ? (
+            subjects.map(({ subject }) => (
+              <option key={subject} value={subject}>
+                {subject}
+              </option>
+            ))
+          ) : (
+            <option disabled>No subjects found</option>
           )}
+        </select>
+      </div> */}
+      <div style={{ margin: "1rem 0" }}>
+        <label>Select Students:</label>
+        <Select
+          isMulti
+          name="students"
+          options={studentOptions}
+          value={selectedStudents}
+          onChange={(selected) =>
+            setSelectedStudents(selected as { value: number; label: string }[])
+          }
+          className="basic-multi-select"
+          classNamePrefix="select"
         />
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
-  )
+      </div>
+      <Button type="submit" disabled={loading}>
+        {loading ? <Loader2 className="animate-spin mr-2" /> : null}
+        Assign
+      </Button>
+    </form>
+  );
 }
+
+export default StudentAssignmentForm;
