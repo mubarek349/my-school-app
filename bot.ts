@@ -1,5 +1,6 @@
 import { Bot } from "grammy";
 import prisma from "./lib/db";
+import { updatePathProgressData } from "@/actions/student/progress";
 import { InlineKeyboard } from "grammy";
 
 // Replace this with your public domain or use an environment variable
@@ -74,7 +75,11 @@ export async function startBot() {
         });
       }
 
-      const url = `${BASE_URL}/${lang}/${stud}/${chatId}/${course.id}/${chapter.id}`;
+      const update = await updatePathProgressData(chatId.toString());
+      console.log(update);
+      const url = `${BASE_URL}/${lang}/${stud}/${chatId}/${update?.chapter.course.id}/${update?.chapter.id}`;
+
+      // const url = `${BASE_URL}/${lang}/${stud}/${chatId}/${course.id}/${chapter.id}`;
 
       const keyboard = new InlineKeyboard().url("📚 Open Course Page", url);
 

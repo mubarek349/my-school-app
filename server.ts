@@ -3,6 +3,9 @@ import express from "express";
 import cors from "cors";
 import next from "next";
 import { startBot } from "./bot";
+const app11 = express();
+
+app11.set("trust proxy", 1);
 
 process.loadEnvFile(".env");
 

@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useAction from "@/hooks/useAction";
 import { correctAnswer } from "@/actions/student/question";
 import { submitAnswers } from "@/actions/student/question";
@@ -88,6 +88,15 @@ const StudentQuestionForm = ({
     chatId
   );
 
+  useEffect(() => {
+    if (showCorrect && feedback?.result?.score !== 1) {
+      const timer = setTimeout(() => {
+        setShowCorrect(false);
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [showCorrect, feedback]);
+
   React.useEffect(() => {
     if (progressData) {
       // Do something with progressData
@@ -171,14 +180,15 @@ const StudentQuestionForm = ({
             {chapter.questions.map((question) => (
               <div
                 key={question.id}
-                className="p-4 border rounded-md bg-slate-100"
+                className="p-4 border rounded-md bg-slate-100 dark:bg-slate-800"
               >
                 <h3 className="font-medium">
                   {questionNo++}. {question.question}
                 </h3>
                 <ul className="mt-2 space-y-2">
                   {question.questionOptions.map((option) => {
-                    let optionClass = "p-2 border rounded-md bg-white";
+                    let optionClass =
+                      "p-2 border rounded-md bg-white dark:bg-slate-800";
                     const answered = showCorrect && feedback;
                     const isSelected = (
                       selectedAnswers[question.id] || []
@@ -247,13 +257,13 @@ const StudentQuestionForm = ({
                 ) : null}
                 Submit Answers
               </Button>
-              <Button
+              {/* <Button
                 variant="outline"
                 onClick={handleReset}
                 disabled={!showCorrect}
               >
                 Reset
-              </Button>
+              </Button> */}
               {showCorrect && feedback?.result?.score === 1 ? (
                 <Button asChild>
                   <Link
@@ -264,7 +274,10 @@ const StudentQuestionForm = ({
                 </Button>
               ) : showCorrect && feedback?.result?.score !== 1 ? (
                 <div className="text-red-600 font-semibold flex items-center">
-                  You failed the exam. Please try again.
+                  You failed the exam. Please try again after 10 seconds.
+                  <span className="ml-2">
+                    <CountdownTimer initialSeconds={10} />
+                  </span>
                 </div>
               ) : null}
             </div>
@@ -287,6 +300,28 @@ const StudentQuestionForm = ({
         )}
       </div>
     </div>
+  );
+};
+
+// Simple countdown timer component
+const CountdownTimer: React.FC<{ initialSeconds: number }> = ({
+  initialSeconds,
+}) => {
+  const [seconds, setSeconds] = useState(initialSeconds);
+
+  useEffect(() => {
+    if (seconds <= 0) return;
+    const interval = setInterval(() => setSeconds((s) => s - 1), 1000);
+    return () => clearInterval(interval);
+  }, [seconds]);
+
+  const minutes = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+
+  return (
+    <span>
+      {minutes}:{secs.toString().padStart(2, "0")}
+    </span>
   );
 };
 

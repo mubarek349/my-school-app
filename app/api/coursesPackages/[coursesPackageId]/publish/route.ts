@@ -46,7 +46,7 @@ export async function PATCH(
     });
     if (
       !coursesPackage ||
-      !coursesPackage.n ||
+      !coursesPackage.name ||
       !coursesPackage.description
     ) {
       return new NextResponse("Chapter not found or missing title", {
@@ -56,7 +56,7 @@ export async function PATCH(
     const publishedCoursesPackage = await prisma.coursePackage.update({
       where: {
         id: coursesPackageId,
-        courses:{ some: { isPublished: true }},
+        courses: { some: { isPublished: true } },
       },
       data: {
         isPublished: true,

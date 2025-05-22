@@ -11,7 +11,7 @@ import { CoursesForm } from "@/components/custom/courses-form";
 import { Banner } from "@/components/custom/banner";
 import { CoursesPackageActions } from "@/components/custom/courses-package-action";
 import Link from "next/link";
-import  StudentAssignmentForm  from "@/components/custom/student-assignment-form";
+import StudentAssignmentForm from "@/components/custom/student-assignment-form";
 // import { StudentSelectionForm } from "@/components/custom/student-selection-form";
 
 const CoursesPackageIdPage = async ({
@@ -107,8 +107,8 @@ const CoursesPackageIdPage = async ({
             />
             <div>{/* <h1>student list</h1> */}</div>
             <StudentAssignmentForm
-              // initialData={students}
-              // coursesPackageId={coursesPackage.id}
+            // initialData={students}
+            // coursesPackageId={coursesPackage.id}
             />
           </div>
         </div>
