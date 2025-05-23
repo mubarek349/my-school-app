@@ -148,6 +148,25 @@ function Page() {
           <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-gray-100">
             <div className="animate-pulse w-4/5 h-4/5 bg-gray-300 rounded-lg" />
           </div>
+        ) : data && "message" in data ? (
+          <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-green-50 rounded-lg">
+            <svg
+              className="w-12 h-12 text-green-600 mb-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2.5}
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            <span className="text-center text-xl font-bold text-green-700">
+              {data.message}
+            </span>
+          </div>
         ) : (
           <iframe
             className="absolute top-0 left-0 w-full h-full"
@@ -199,26 +218,7 @@ function Page() {
               mistake.
             </span>
           </div>
-        ) : "message" in data ? (
-          <div className="flex flex-col items-center justify-center m-0">
-            <svg
-              className="w-12 h-12 text-green-600 mb-4"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2.5}
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-            <span className="text-center text-xl font-bold text-green-700">
-              {data.message}
-            </span>
-          </div>
-        ) : (
+        ) : "message" in data ? null : (
           data.chapter &&
           Array.isArray(data.chapter.questions) && (
             <StudentQuestionForm

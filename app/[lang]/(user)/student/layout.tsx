@@ -76,6 +76,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       )}
       <div className="overflow-y-auto py-2  overflow-x-hidden">
         {/* Desktop: Progress bar fixed at top, Mobile: Progress bar below menu */}
+        {isMobile && (
+          <div className="fixed w-full shadow-md p-4 z-40">
+            {isLoading ? (
+              <ProgressSkeleton />
+            ) : (
+              <>
+                <Progress value={progress} className="w-[60%] mx-auto" />
+                <div className="text-green-500 text-sm text-center mt-1">
+                  {completed} / {total}
+                </div>
+              </>
+            )}
+          </div>
+        )}
         {!isMobile && (
           <div className="fixed top-0 w-dvw shadow-md p-4 z-40 bg-background ">
             {isLoading ? (
@@ -90,7 +104,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             )}
           </div>
         )}
-        <div className={`px-4 ${isMobile ? "pt-0" : "mt-20"}`}>{children}</div>
+        <div className={`px-4 ${isMobile ? "mt-10" : "mt-20"}`}>{children}</div>
       </div>
     </div>
   );

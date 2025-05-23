@@ -51,7 +51,7 @@ function MenuTitle() {
   return (
     <div className="flex items-center">
       <Image src="/logo.jpg" alt="Darulkubra" width={40} height={40} />
-      {isDesktop && (
+      {/* {isDesktop && (
         <div className="fixed w-full shadow-md p-4 z-40">
           {isLoading ? (
             <ProgressSkeleton />
@@ -64,7 +64,7 @@ function MenuTitle() {
             </>
           )}
         </div>
-      )}
+      )} */}
     </div>
   );
 }

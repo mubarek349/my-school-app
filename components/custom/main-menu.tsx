@@ -4,6 +4,7 @@ import MenuTitle from "./menu-title";
 import { LightDarkToggle } from "@/components/ui/light-dark-toggle";
 import { cn } from "@/lib/utils";
 import useAction from "@/hooks/useAction";
+import { CheckCircle, PlayCircle, Lock } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -14,6 +15,7 @@ import { getStudentProgressPerChapter } from "@/actions/student/progress";
 import { updatePathProgressData } from "@/actions/student/progress";
 import { getPackageData } from "@/actions/student/package";
 import { useParams } from "next/navigation";
+import Loading from "./loading";
 
 export default function MainMenu({ className }: { className?: string }) {
   const params = useParams();
@@ -78,7 +80,9 @@ export default function MainMenu({ className }: { className?: string }) {
         )}
       </ul> */}
       {!data ? (
-        <div className="flex justify-center items-center py-8">Loading...</div>
+        <div className="flex justify-center items-center py-8">
+          <Loading />
+        </div>
       ) : (
         <Accordion type="single" collapsible>
           <h3 className="font-bold mb-2">{data.activePackage?.name}</h3>
@@ -101,6 +105,24 @@ export default function MainMenu({ className }: { className?: string }) {
                         "block p-2 hover:bg-primary hover:text-foreground hover:rounded-md hover:shadow transition-colors text-muted-foreground "
                       )}
                     >
+                      <span
+                        className={cn(
+                          "ml-0 px-0 py-0 rounded text-xs font-semibold",
+                          isCompleted === true
+                            ? ""
+                            : isCompleted === false
+                            ? ""
+                            : ""
+                        )}
+                      >
+                        {isCompleted === true ? (
+                          <CheckCircle className="inline w-4 h-4 mr-4 text-green-500" />
+                        ) : isCompleted === false ? (
+                          <PlayCircle className="inline w-4 h-4 mr-4 text-gray-400" />
+                        ) : (
+                          <Lock className="inline w-4 h-4 mr-4 text-yellow-500" />
+                        )}
+                      </span>
                       <span>lesson: {chapter.position}</span>
                       <button
                         disabled={!isCompleted}
@@ -121,22 +143,6 @@ export default function MainMenu({ className }: { className?: string }) {
                       >
                         {chapter.title}
                       </button>
-                      <span
-                        className={cn(
-                          "ml-0 px-0 py-0 rounded text-xs font-semibold",
-                          isCompleted === true
-                            ? ""
-                            : isCompleted === false
-                            ? ""
-                            : ""
-                        )}
-                      >
-                        {isCompleted === true
-                          ? "🔓"
-                          : isCompleted === false
-                          ? "🔐"
-                          : "🗝️"}
-                      </span>
                     </div>
                   );
                 })}

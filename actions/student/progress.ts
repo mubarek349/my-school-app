@@ -179,7 +179,7 @@ export async function getActivePackageProgeess(chatId: string) {
     },
   });
 
-   await prisma.studentProgress.count({
+  await prisma.studentProgress.count({
     where: {
       student: { chat_id: chatId },
       isCompleted: true,
@@ -294,6 +294,7 @@ export async function updatePathProgressData(chatId: string) {
 
     // check nodata is found in studntprogress
     if (!lastChapter) {
+      return null;
       const firstCourse = await prisma.course.findFirst({
         where: {
           order: 1,
@@ -311,24 +312,25 @@ export async function updatePathProgressData(chatId: string) {
         },
       });
 
-      if (firstCourse && firstCourse.chapters.length > 0) {
-        return {
-          chapter: {
-            id: firstCourse.chapters[0].id,
-            course: {
-              id: firstCourse.id,
-            },
-          },
-        };
-      } else {
-        return null
-      }
+      // if (firstCourse && firstCourse.chapters.length > 0) {
+      //   return {
+      //     chapter: {
+      //       id: firstCourse.chapters[0].id,
+      //       course: {
+      //         id: firstCourse.id,
+      //       },
+      //     },
+      //   };
+      // } else {
+      //   return null;
+      // }
     }
 
     if (lastChapter && lastChapter.chapter) {
       console.log("Last chapter progress:", lastChapter);
       return lastChapter;
     } else {
+      return null;
       throw new Error("No last chapter found for the student.");
     }
   } catch (error) {

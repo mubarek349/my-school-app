@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import useAction from "@/hooks/useAction";
 import {
@@ -8,43 +8,28 @@ import {
   getStudSubject,
   // setPackage,
 } from "@/actions/admin/packageassign";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Button } from "../ui/button";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 function StudentAssignmentForm() {
   const { coursesPackageId } = useParams<{ coursesPackageId: string }>();
   // const [students] = useAction(getStudent, [true, () => {}], coursesPackageId);
   const [subjects] = useAction(getStudSubject, [true, () => {}]);
-  const router = useRouter();
-  const [, addPackage, loading] = useAction(assignPackage, [, () => {}]);
+  // const router = useRouter();
+  const [res, addPackage, loading] = useAction(assignPackage, [, () => {}]);
+
+  useEffect(() => {
+    if (res) {
+      toast.success("successfully assigned");
+    }
+  }, [res]);
 
   const [selectedSubject, setSelectedSubject] = useState<
     { value: string; label: string }[]
   >([]);
-  // const [selectedStudents, setSelectedStudents] = useState<
-  //   { value: number; label: string }[]
-  // >([]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const subjectId = selectedSubject.map((s) => s.label);
-    console.log(subjectId);
-    (async () => {
-      try {
-        await addPackage(coursesPackageId, subjectId);
-        toast.success("student assign successfully");
-        router.refresh();
-      } catch {
-        toast.error("student fail");
-        console.error("error");
-      }
-    })();
-  };
-  console.log("sucess");
-  toast.success("students assigned successfully");
 
   const studentOptions =
     Array.isArray(subjects) && subjects.length > 0
@@ -55,7 +40,9 @@ function StudentAssignmentForm() {
       : [];
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div
+    // onSubmit={handleSubmit}
+    >
       {/* <div>
         <label>Select Subject:</label>
         <select
@@ -91,11 +78,22 @@ function StudentAssignmentForm() {
           classNamePrefix="select"
         />
       </div>
-      <Button type="submit" disabled={loading}>
+      <Button
+        disabled={loading}
+        onClick={() => {
+          if (selectedSubject.length > 0) {
+            addPackage(
+              coursesPackageId,
+              selectedSubject.map((s) => s.label)
+            );
+          }
+          console.log("AK >> ");
+        }}
+      >
         {loading ? <Loader2 className="animate-spin mr-2" /> : null}
         Assign
       </Button>
-    </form>
+    </div>
   );
 }
 
