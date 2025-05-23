@@ -114,7 +114,7 @@ function Page() {
   }
 
   return (
-    <div className="pb-30 video-container flex flex-col gap-y-3 z-50 overflow-y-auto h-dvh ">
+    <div className="pb-30 video-container flex flex-col gap-y-3 z-50 overflow-hidden">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -183,7 +183,7 @@ function Page() {
           ></iframe>
         )}
       </div>
-      <div>
+      <div className="overflow-hidden">
         {isLoading ? (
           <div className="space-y-4">
             <div className="animate-pulse flex flex-col gap-4">

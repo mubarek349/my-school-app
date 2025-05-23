@@ -9,6 +9,7 @@ import { updatePathProgressData } from "@/actions/student/progress";
 import { toast } from "sonner";
 import { CheckCircle2Icon, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 // Add these SVG icons (or use your own)
 const CheckIcon = () => (
@@ -79,6 +80,7 @@ const StudentQuestionForm = ({
     [true, (response) => console.log(response)],
     chatId
   );
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   //  const refresh next buttom
 
@@ -172,11 +174,19 @@ const StudentQuestionForm = ({
     ) ?? false;
 
   return (
-    <div className="mt-2 ">
-      <div className="mt-4">
+    <div className="overflow-hidden">
+      <div
+        className={`overflow-hidden flex flex-col ${
+          isMobile ? "h-[70vh]" : "h-full"
+        } `}
+      >
         <h2 className="text-xl font-semibold">Chapter Questions</h2>
         {chapter?.questions.length ? (
-          <div className="mt-4 space-y-4">
+          <div
+            className={`mb-40 space-y-4 flex-1 ${
+              isMobile ? "overflow-y-auto" : ""
+            } h-svh`}
+          >
             {chapter.questions.map((question) => (
               <div
                 key={question.id}
@@ -247,7 +257,7 @@ const StudentQuestionForm = ({
               </div>
             ))}
 
-            <div className="flex gap-4 mt-4">
+            <div className="gap-4 mt-4">
               <Button
                 onClick={handleSubmit}
                 disabled={!allAnswered || showCorrect || submitloading}
