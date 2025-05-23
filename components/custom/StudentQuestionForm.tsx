@@ -86,7 +86,7 @@ const StudentQuestionForm = ({
 
   const [progressData, refreshProgress] = useAction(
     updatePathProgressData,
-    [true, (response) => console.log("AK >> ", response)],
+    [true, (response) => console.log(response)],
     chatId
   );
 
@@ -177,7 +177,7 @@ const StudentQuestionForm = ({
     <div className="overflow-hidden">
       <div
         className={`overflow-hidden flex flex-col ${
-          isMobile ? "h-[70vh]" : "h-full"
+          isMobile ? "h-[70vh] pb-10" : "h-full"
         } `}
       >
         <h2 className="text-xl font-semibold">Chapter Questions</h2>

@@ -46,7 +46,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="md:grid md:grid-cols-[250px_1fr] h-screen overflow-hidden">
       <MainMenu className="hidden md:flex" />
       {isMobile && (
-        <div className="p-4 flex justify-between md:hidden sticky top-0 left-0 bg-background border-b border-border">
+        <div className="p-2 flex justify-between md:hidden sticky top-0 left-0 bg-background border-b border-border">
           <MenuTitle />
           {/* Hamburger button outside Drawer */}
           <button
@@ -74,18 +74,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </Drawer>
         </div>
       )}
-      <div className="overflow-y-auto py-2  overflow-x-hidden">
+      <div className="overflow-y-auto py-1  overflow-x-hidden">
         {/* Desktop: Progress bar fixed at top, Mobile: Progress bar below menu */}
         {isMobile && (
-          <div className="fixed w-full shadow-md p-4 z-40">
+          <div className="fixed w-full p-0 z-40">
             {isLoading ? (
               <ProgressSkeleton />
             ) : (
               <>
                 <Progress value={progress} className="w-[60%] mx-auto" />
-                <div className="text-green-500 text-sm text-center mt-1">
+                {/* <div className="text-green-500 text-sm text-center mt-1">
                   {completed} / {total}
-                </div>
+                </div> */}
               </>
             )}
           </div>
@@ -97,9 +97,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             ) : (
               <>
                 <Progress value={progress} className="w-[60%] mx-auto mb-2" />
-                <div className="text-green-500 text-sm text-center mt-1">
+                {/* <span className="text-green-500 text-sm text-center mt-1 ">
                   {completed} / {total}
-                </div>
+                </span> */}
               </>
             )}
           </div>
