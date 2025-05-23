@@ -81,10 +81,10 @@ export async function startBot() {
 
       // const url = `${BASE_URL}/${lang}/${stud}/${chatId}/${course.id}/${chapter.id}`;
 
-      const keyboard = new InlineKeyboard().url("📚 Open Course Page", url);
+      const keyboard = new InlineKeyboard().webApp("📚 የትምህርቱን ገጽ ይክፈቱ", url);
 
       return ctx.reply(
-        "✅ Welcome! Click the button below to access your courses:",
+        "✅  እንኳን ወደ ዳሩል-ኩብራ የቁርአን ማእከል በደህና መጡ! ኮርሱን ለመከታተል ከታች ያለውን ማስፈንጠሪያ ይጫኑ፡፡",
         {
           reply_markup: keyboard,
         }

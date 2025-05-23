@@ -114,7 +114,7 @@ function Page() {
   }
 
   return (
-    <div className="p-3 video-container flex flex-col gap-y-3 z-50">
+    <div className="pb-30 video-container flex flex-col gap-y-3 z-50 overflow-y-auto h-dvh ">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>

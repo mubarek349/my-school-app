@@ -43,7 +43,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [progressData, isLoading]);
 
   return (
-    <div className="md:grid md:grid-cols-[250px_1fr] h-screen">
+    <div className="md:grid md:grid-cols-[250px_1fr] h-screen overflow-hidden">
       <MainMenu className="hidden md:flex" />
       {isMobile && (
         <div className="p-4 flex justify-between md:hidden sticky top-0 left-0 bg-background border-b border-border">

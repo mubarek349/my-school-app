@@ -135,11 +135,11 @@ const StudentQuestionForm = ({
     });
   };
 
-  const handleReset = () => {
-    setSelectedAnswers({});
-    setShowCorrect(false);
-    setFeedback(null);
-  };
+  // const handleReset = () => {
+  //   setSelectedAnswers({});
+  //   setShowCorrect(false);
+  //   setFeedback(null);
+  // };
 
   async function handleSubmit() {
     if (!chapter) return;
@@ -172,7 +172,7 @@ const StudentQuestionForm = ({
     ) ?? false;
 
   return (
-    <div className="mt-2">
+    <div className="mt-2 ">
       <div className="mt-4">
         <h2 className="text-xl font-semibold">Chapter Questions</h2>
         {chapter?.questions.length ? (
