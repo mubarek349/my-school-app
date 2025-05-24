@@ -13,6 +13,7 @@ import { Button } from "../ui/button";
 // import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import { Label } from "../ui/label";
 
 function StudentAssignmentForm() {
   const { coursesPackageId } = useParams<{ coursesPackageId: string }>();
@@ -64,7 +65,7 @@ function StudentAssignmentForm() {
         </select>
       </div> */}
       <div style={{ margin: "1rem 0" }}>
-        <label>Select Student&apos;s Subject to be assigned:</label>
+        <Label className="font-medium">Select Student&apos;s Subject to be assigned:</Label>
         <Select
           closeMenuOnSelect={false}
           isMulti
@@ -74,12 +75,13 @@ function StudentAssignmentForm() {
           onChange={(selected) =>
             setSelectedSubject(selected as { value: string; label: string }[])
           }
-          className="basic-multi-select"
+          className="basic-multi-select mt-4"
           classNamePrefix="select"
         />
       </div>
       <Button
         disabled={loading}
+        className="mb-4"
         onClick={() => {
           if (selectedSubject.length > 0) {
             addPackage(

@@ -2,8 +2,8 @@ import React from "react";
 
 export default async function layout({
   children,
-  // params,
-}: {
+}: // params,
+{
   children: React.ReactNode;
   params: Promise<{ chat_id: string; courseId: string; chapterId: string }>;
 }) {
@@ -18,5 +18,5 @@ export default async function layout({
   //     name: true,
   //   },
   // });
-  return <div className="overflow-hidden">{children}</div>;
+  return <div className="overflow-hidden grid">{children}</div>;
 }

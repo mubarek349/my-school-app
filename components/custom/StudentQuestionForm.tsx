@@ -9,7 +9,7 @@ import { updatePathProgressData } from "@/actions/student/progress";
 import { toast } from "sonner";
 import { CheckCircle2Icon, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useMediaQuery } from "@/hooks/use-media-query";
+// import { useMediaQuery } from "@/hooks/use-media-query";
 import { useMainMenu } from "@/app/[lang]/(user)/student/layout";
 
 // Add these SVG icons (or use your own)
@@ -81,7 +81,7 @@ const StudentQuestionForm = ({
     [true, (response) => console.log(response)],
     chatId
   );
-  const isMobile = useMediaQuery("(max-width: 1440px)");
+  // const isMobile = useMediaQuery("(max-width: 1440px)");
 
   //  const refresh next buttom
 
@@ -180,16 +180,14 @@ const StudentQuestionForm = ({
   return (
     <div className="overflow-hidden">
       <div
-        className={`overflow-hidden flex flex-col ${
-          isMobile ? "h-[63vh]" : "h-screen"
-        } `}
+        className="overflow-hidden flex flex-col 
+          max-md:h-[63vh]- md:h-screen-"
       >
         <h2 className="text-xl font-semibold">Chapter Questions</h2>
         {chapter?.questions.length ? (
           <div
-            className={`mb-40 space-y-2 flex-1 ${
-              isMobile ? "overflow-y-auto" : ""
-            } h-svh`}
+            className="mb-40 space-y-2 flex-1 
+              max-md:overflow-y-auto md:h-svh"
           >
             {chapter.questions.map((question) => (
               <div
@@ -242,7 +240,7 @@ const StudentQuestionForm = ({
                         <label className="flex items-center gap-x-2">
                           <input
                             type="checkbox"
-                            // className="sr-only rounded"
+                            className="hidden rounded"
                             name={`question-${question.id}`}
                             value={option.id}
                             checked={isSelected}
@@ -271,6 +269,7 @@ const StudentQuestionForm = ({
                 ) : null}
                 Submit Answers
               </Button>
+
               {/* <Button
                 variant="outline"
                 onClick={handleReset}
@@ -294,6 +293,7 @@ const StudentQuestionForm = ({
                   </span>
                 </div>
               ) : null}
+              <div className="p-10"></div>
             </div>
             {showCorrect && feedback?.result && (
               <div className="mt-6 p-4 rounded bg-slate-50 border text-center">

@@ -40,15 +40,15 @@ export default function ProgressPage() {
   }, [progressData, isLoading]);
 
   return (
-    <div className="overflow-y-auto py-2  overflow-x-hidden">
+    <div className="py-2 grid">
       {/* Desktop: Progress bar fixed at top, Mobile: Progress bar below menu */}
       {isMobile && (
-        <div className=" w-full shadow-accent ml-auto z-40">
+        <div className=" grid ">
           {isLoading ? (
             <ProgressSkeleton />
           ) : (
             <>
-              <Progress value={progress} className="w-[60%] mx-auto " />
+              <Progress value={progress} className="w-[90%] mx-auto " />
               {/* <div className="text-green-500 text-sm text-center mt-1">
                   {completed} / {total}
                 </div> */}
@@ -57,12 +57,12 @@ export default function ProgressPage() {
         </div>
       )}
       {!isMobile && (
-        <div className="fixed top-0 w-dvw shadow-md p-4 z-40 bg-background ">
+        <div className=" p-4 z-40 bg-background grid">
           {isLoading ? (
             <ProgressSkeleton />
           ) : (
             <>
-              <Progress value={progress} className="w-[60%] mx-auto mb-2" />
+              <Progress value={progress} className="w-[90%] mx-auto mb-2" />
               <div className="text-green-500 text-sm text-center mt-1">
                 {completed} / {total}
               </div>

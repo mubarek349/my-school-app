@@ -62,7 +62,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <div className="md:grid md:grid-cols-[250px_1fr] h-auto">
+    <div className="md:grid md:grid-cols-[250px_1fr] h-auto overflow-hidden">
       <MainMenu data={data} className="hidden md:flex" />
       {isMobile && (
         <div className="p-4 flex justify-between md:hidden sticky top-0 left-0 bg-background border-b border-border">
@@ -90,11 +90,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 Close
               </button>
             </DrawerContent>
-          </Drawer >
+          </Drawer>
         </div>
       )}
       <MenuContext.Provider value={{ refresh }}>
-        {children}
+        <div className="h-dvh overflow-hidden grid ">{children}</div>
       </MenuContext.Provider>
     </div>
   );

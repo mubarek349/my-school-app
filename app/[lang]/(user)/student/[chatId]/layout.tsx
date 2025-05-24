@@ -8,7 +8,7 @@ async function layout({
   params: Promise<{ chat_id: string; lang: string }>;
 }) {
   
-  return <div className="overflow-hidden">{children}</div>;
+  return <div className="overflow-hidden grid">{children}</div>;
 }
 
 export default layout;

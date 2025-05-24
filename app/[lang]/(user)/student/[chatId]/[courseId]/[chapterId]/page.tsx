@@ -115,10 +115,10 @@ function Page() {
   }
 
   return (
-    <div>
+    <div className="overflow-hidden px-2 md:px-10 grid grid-rows-[auto_1fr]">
       <ProgressPage />
-      <div className="video-container flex flex-col gap-y-3 z-50 ml-4 overflow-hidden">
-        <Breadcrumb>
+      <div className=" flex-col overflow-auto ">
+        <Breadcrumb className="ml-4">
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink>
@@ -143,52 +143,46 @@ function Page() {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-
         {/* Responsive iframe wrapper */}
-        <div
-          className="relative w-full"
-          style={{ paddingTop: "56.25%" /* 16:9 Aspect Ratio */ }}
-        >
-          {isLoading ? (
-            <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-gray-100">
-              <div className="animate-pulse w-4/5 h-4/5 bg-gray-300 rounded-lg" />
-            </div>
-          ) : data && "message" in data ? (
-            <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-green-50 rounded-lg">
-              <svg
-                className="w-12 h-12 text-green-600 mb-4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2.5}
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-              <span className="text-center text-xl font-bold text-green-700">
-                {data.message}
-              </span>
-            </div>
-          ) : (
-            <iframe
-              className="absolute top-0 left-0 w-full h-full"
-              src={
-                data && "chapter" in data && data.chapter?.videoUrl
-                  ? `https://www.youtube.com/embed/${data.chapter.videoUrl}`
-                  : undefined
-              }
-              title="Darulkubra video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            ></iframe>
-          )}
-        </div>
-        <div className="overflow-hidden">
+        {isLoading ? (
+          <div className=" flex items-center justify-center bg-gray-100">
+            <div className="animate-pulse w-4/5 h-4/5 bg-gray-300 rounded-lg" />
+          </div>
+        ) : data && "message" in data ? (
+          <div className=" flex flex-col items-center justify-center bg-green-50 rounded-lg">
+            <svg
+              className="w-12 h-12 text-green-600 mb-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2.5}
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            <span className="text-center text-xl font-bold text-green-700">
+              {data.message}
+            </span>
+          </div>
+        ) : (
+          <iframe
+            className="max-md:sticky max-md:top-0 w-full aspect-video"
+            src={
+              data && "chapter" in data && data.chapter?.videoUrl
+                ? `https://www.youtube.com/embed/${data.chapter.videoUrl}`
+                : undefined
+            }
+            title="Darulkubra video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          ></iframe>
+        )}
+        <div className=" ">
           {isLoading ? (
             <div className="space-y-4">
               <div className="animate-pulse flex flex-col gap-4">
