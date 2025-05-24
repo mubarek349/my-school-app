@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { CheckCircle2Icon, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { useMainMenu } from "@/app/[lang]/(user)/student/layout";
 
 // Add these SVG icons (or use your own)
 const CheckIcon = () => (
@@ -143,6 +144,8 @@ const StudentQuestionForm = ({
   //   setFeedback(null);
   // };
 
+  const { refresh } = useMainMenu();
+
   async function handleSubmit() {
     if (!chapter) return;
     // Transform selectedAnswers into an array of { questionId, answerId }
@@ -161,6 +164,7 @@ const StudentQuestionForm = ({
       setShowCorrect(true);
       toast.success("Next chapter unlocked!");
       refreshProgress?.();
+      refresh();
     } catch (e) {
       console.log(e);
       toast.error("Failed to submit answers.");

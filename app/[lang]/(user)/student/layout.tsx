@@ -1,10 +1,13 @@
 "use client";
-import React,{ useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import MainMenu from "@/components/custom/main-menu";
 import MenuTitle from "@/components/custom/menu-title";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { MenuIcon } from "lucide-react";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import useAction from "@/hooks/useAction";
+import { getPackageData } from "@/actions/student/package";
+import { useParams } from "next/navigation";
 // import { useParams } from "next/navigation";
 // import useAction from "@/hooks/useAction";
 // import { getActivePackageProgress } from "@/actions/student/progress";
@@ -16,6 +19,16 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 //     <div className="w-[60%] mx-auto h-4 bg-gray-200 rounded animate-pulse mb-2" />
 //   );
 // }
+
+const MenuContext = createContext<{ refresh: () => void } | null>(null);
+
+export const useMainMenu = () => {
+  const value = useContext(MenuContext);
+
+  if (!value) throw new Error("you need to provide first");
+
+  return value;
+};
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -41,11 +54,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   //     setProgress((completedChapters / totalChapters) * 100);
   //   }
   // }, [progressData, isLoading]);
-  
+  const { chatId } = useParams<{ chatId: string }>();
+  const [data, refresh] = useAction(
+    getPackageData,
+    [true, (response) => console.log(response)],
+    chatId
+  );
 
   return (
     <div className="md:grid md:grid-cols-[250px_1fr] h-auto">
-      <MainMenu className="hidden md:flex" />
+      <MainMenu data={data} className="hidden md:flex" />
       {isMobile && (
         <div className="p-4 flex justify-between md:hidden sticky top-0 left-0 bg-background border-b border-border">
           <MenuTitle />
@@ -63,7 +81,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             onOpenChange={(open) => setMobileMenuOpen(open)}
           >
             <DrawerContent>
-              <MainMenu className="w-64" />
+              <MainMenu data={data} className="w-64" />
               {/* Close button inside Drawer */}
               <button
                 onClick={() => setMobileMenuOpen(false)}
@@ -72,10 +90,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 Close
               </button>
             </DrawerContent>
-          </Drawer>
+          </Drawer >
         </div>
       )}
-      {children}
+      <MenuContext.Provider value={{ refresh }}>
+        {children}
+      </MenuContext.Provider>
     </div>
   );
 }

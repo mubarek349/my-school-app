@@ -3,7 +3,7 @@ import React from "react";
 import MenuTitle from "./menu-title";
 import { LightDarkToggle } from "@/components/ui/light-dark-toggle";
 import { cn } from "@/lib/utils";
-import useAction from "@/hooks/useAction";
+// import useAction from "@/hooks/useAction";
 import { CheckCircle, PlayCircle, Lock } from "lucide-react";
 import {
   Accordion,
@@ -12,25 +12,46 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { getStudentProgressPerChapter } from "@/actions/student/progress";
-import { updatePathProgressData } from "@/actions/student/progress";
-import { getPackageData } from "@/actions/student/package";
+// import { updatePathProgressData } from "@/actions/student/progress";
+// import { getPackageData } from "@/actions/student/package";
 import { useParams } from "next/navigation";
 import Loading from "./loading";
 
-export default function MainMenu({ className }: { className?: string }) {
+export default function MainMenu({
+  data,
+  className,
+}: {
+  data:
+    | {
+        wdt_ID: number;
+        activePackage: {
+          name: string;
+          id: string;
+          courses: {
+            id: string;
+            title: string;
+            order: number;
+            chapters: {
+              id: string;
+              isPublished: boolean;
+              title: string;
+              position: number;
+            }[];
+          }[];
+        } | null;
+      }
+    | null
+    | undefined;
+  className?: string;
+}) {
   const params = useParams();
   const chatId = String(params.chatId);
-  const [refreshProgress] = useAction(
-    updatePathProgressData,
-    [true, (response) => console.log(response)],
-    chatId
-  );
-
-  const [data] = useAction(
-    getPackageData,
-    [true, (response) => console.log(response)],
-    chatId
-  );
+  // const [refreshProgress] = useAction(
+  //   updatePathProgressData,
+  //   [true, (response) => console.log(response)],
+  //   chatId
+  // );
+ 
 
   const [chapterProgress, setChapterProgress] = React.useState<
     Record<string, boolean | null>
@@ -55,7 +76,7 @@ export default function MainMenu({ className }: { className?: string }) {
       // Removed refreshProgress() call because refreshProgress is not a function
     }
     fetchAllProgress();
-  }, [refreshProgress, data, chatId]);
+  }, [data, chatId]);
 
   // const updateCourseId
   // const updateChapterId
