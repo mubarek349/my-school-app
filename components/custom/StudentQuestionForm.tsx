@@ -80,7 +80,7 @@ const StudentQuestionForm = ({
     [true, (response) => console.log(response)],
     chatId
   );
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery("(max-width: 1440px)");
 
   //  const refresh next buttom
 
@@ -177,28 +177,27 @@ const StudentQuestionForm = ({
     <div className="overflow-hidden">
       <div
         className={`overflow-hidden flex flex-col ${
-          isMobile ? "h-[70vh] pb-10" : "h-full"
+          isMobile ? "h-[63vh]" : "h-screen"
         } `}
       >
         <h2 className="text-xl font-semibold">Chapter Questions</h2>
         {chapter?.questions.length ? (
           <div
-            className={`mb-40 space-y-4 flex-1 ${
+            className={`mb-40 space-y-2 flex-1 ${
               isMobile ? "overflow-y-auto" : ""
             } h-svh`}
           >
             {chapter.questions.map((question) => (
               <div
                 key={question.id}
-                className="p-4 border rounded-md bg-slate-100 dark:bg-slate-800"
+                className="p-2 pl-4 border rounded-md bg-slate-100 dark:bg-slate-800"
               >
                 <h3 className="font-medium">
                   {questionNo++}. {question.question}
                 </h3>
                 <ul className="mt-2 space-y-2">
                   {question.questionOptions.map((option) => {
-                    let optionClass =
-                      "p-2 border rounded-md bg-white dark:bg-slate-800";
+                    let optionClass = "p-2 border rounded-md dark:bg-slate-800";
                     const answered = showCorrect && feedback;
                     const isSelected = (
                       selectedAnswers[question.id] || []
@@ -230,7 +229,7 @@ const StudentQuestionForm = ({
                       }
                     } else {
                       if (isSelected) {
-                        optionClass += " border-blue-400";
+                        optionClass += " border-sky-400 bg-sky-100";
                       }
                     }
 
@@ -239,6 +238,7 @@ const StudentQuestionForm = ({
                         <label className="flex items-center gap-x-2">
                           <input
                             type="checkbox"
+                            // className="sr-only rounded"
                             name={`question-${question.id}`}
                             value={option.id}
                             checked={isSelected}
@@ -257,7 +257,7 @@ const StudentQuestionForm = ({
               </div>
             ))}
 
-            <div className="gap-4 mt-4">
+            <div className="gap-4 m-3">
               <Button
                 onClick={handleSubmit}
                 disabled={!allAnswered || showCorrect || submitloading}
@@ -275,7 +275,7 @@ const StudentQuestionForm = ({
                 Reset
               </Button> */}
               {showCorrect && feedback?.result?.score === 1 ? (
-                <Button asChild>
+                <Button className="ml-5" asChild>
                   <Link
                     href={`/en/student/${chatId}/${progressData?.chapter?.course?.id}/${progressData?.chapter?.id}`}
                   >
@@ -284,9 +284,9 @@ const StudentQuestionForm = ({
                 </Button>
               ) : showCorrect && feedback?.result?.score !== 1 ? (
                 <div className="text-red-600 font-semibold flex items-center">
-                  You failed the exam. Please try again after 10 seconds.
+                  You failed the exam. Please try again after 15 seconds.
                   <span className="ml-2">
-                    <CountdownTimer initialSeconds={10} />
+                    <CountdownTimer initialSeconds={15} />
                   </span>
                 </div>
               ) : null}

@@ -295,22 +295,22 @@ export async function updatePathProgressData(chatId: string) {
     // check nodata is found in studntprogress
     if (!lastChapter) {
       return null;
-      const firstCourse = await prisma.course.findFirst({
-        where: {
-          order: 1,
-        },
-        select: {
-          id: true,
-          chapters: {
-            where: {
-              position: 1,
-            },
-            select: {
-              id: true,
-            },
-          },
-        },
-      });
+      // const firstCourse = await prisma.course.findFirst({
+      //   where: {
+      //     order: 1,
+      //   },
+      //   select: {
+      //     id: true,
+      //     chapters: {
+      //       where: {
+      //         position: 1,
+      //       },
+      //       select: {
+      //         id: true,
+      //       },
+      //     },
+      //   },
+      // });
 
       // if (firstCourse && firstCourse.chapters.length > 0) {
       //   return {

@@ -18,5 +18,5 @@ export default async function layout({
   //     name: true,
   //   },
   // });
-  return <div>{children}</div>;
+  return <div className="overflow-hidden">{children}</div>;
 }
