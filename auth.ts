@@ -8,7 +8,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     authorized({ auth, request: { url } }) {
       if (!auth) {
-        if (url.includes(`/${lang}/admin/coursesPackages`)) return false;
+        if (url.includes(`/${lang}/admin`)) return false;
         else return true;
       }
       return true;

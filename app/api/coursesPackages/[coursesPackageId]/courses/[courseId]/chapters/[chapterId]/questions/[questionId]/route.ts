@@ -33,10 +33,10 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { questionId: string } }
+  { params }: { params: Promise<{ questionId: string }> }
 ) {
   try {
-    const { questionId } = params;
+    const { questionId } = await params;
     const questionData = await request.json();
     const { title, options, answers } = questionData;
 
@@ -95,10 +95,10 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { questionId: string } }
+  { params }: { params: Promise<{ questionId: string }> }
 ) {
   try {
-    const { questionId } = params;
+    const { questionId } = await params;
 
     if (!questionId) {
       return NextResponse.json(

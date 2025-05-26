@@ -37,7 +37,7 @@ export const NavbarRoutes = ({
 
   const lang = "en";
   const onClick = () => {
-    router.push("/");
+    router.push(`/${lang}`);
   };
 
   return (
@@ -53,7 +53,7 @@ export const NavbarRoutes = ({
 
       {/* <div className="flex-1"></div> */}
       <div className="p-7 flex flex-col border-b">
-        <h1 className="font-semibold">{coursesPackage?.title}</h1>
+        <h1 className="font-semibold">{coursesPackage?.name}</h1>
         <div className="mt-10">
           <CourseProgress
             // variant="success"
@@ -89,7 +89,7 @@ export const NavbarRoutes = ({
             <span className="text-sm">Exit</span>
           </Button>
         ) : (
-          <Link href={`/en/${lang}/admin/courses`}>
+          <Link href={`/${lang}/admin/coursesPackages`}>
             <Button
               size="sm"
               variant="ghost"

@@ -1,11 +1,8 @@
-import { prisma } from "@/lib/db";
-import { showAnswer } from "./question";
-import { correctAnswer } from "./question";
+import  prisma  from "@/lib/db";
 
 export default async function getActiveChapter(
   courseId: string,
   chapterId: string,
-  chat_id: string
 ) {
   try {
     const activeChapter = await prisma.chapter.findFirst({
@@ -42,7 +39,7 @@ export default async function getActiveChapter(
   }
 }
 // this function is used for unlocking the next chapter
-let noOfTrial = 0;
+// let noOfTrial = 0;
 // export async function unlockingNextChapter(
 //   courseId: string,
 //   chapterId: string,

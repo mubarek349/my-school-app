@@ -3,7 +3,6 @@ import React from "react";
 import MenuTitle from "./menu-title";
 import { LightDarkToggle } from "@/components/ui/light-dark-toggle";
 import { cn } from "@/lib/utils";
-// import useAction from "@/hooks/useAction";
 import { CheckCircle, PlayCircle, Lock } from "lucide-react";
 import {
   Accordion,
@@ -12,8 +11,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { getStudentProgressPerChapter } from "@/actions/student/progress";
-// import { updatePathProgressData } from "@/actions/student/progress";
-// import { getPackageData } from "@/actions/student/package";
 import { useParams } from "next/navigation";
 import Loading from "./loading";
 
@@ -46,12 +43,6 @@ export default function MainMenu({
 }) {
   const params = useParams();
   const chatId = String(params.chatId);
-  // const [refreshProgress] = useAction(
-  //   updatePathProgressData,
-  //   [true, (response) => console.log(response)],
-  //   chatId
-  // );
- 
 
   const [chapterProgress, setChapterProgress] = React.useState<
     Record<string, boolean | null>
@@ -73,114 +64,104 @@ export default function MainMenu({
         })
       );
       setChapterProgress(Object.fromEntries(progressEntries));
-      // Removed refreshProgress() call because refreshProgress is not a function
     }
     fetchAllProgress();
   }, [data, chatId]);
 
-  // const updateCourseId
-  // const updateChapterId
   return (
     <nav
       className={cn(
-        " bg-muted h-full overflow-auto py-2 px-4 flex flex-col gap-4",
+        "bg-sky-100 dark:bg-sky-900 h-full overflow-y-auto py-4 px-4 md:px-6 flex flex-col gap-6 shadow-lg",
         className
       )}
     >
-      <header className=" hidden md:block border-b dark:border-b-black border-b-zinc-200">
+      <header className="hidden md:block border-b border-sky-200 dark:border-sky-700 pb-4">
         <MenuTitle />
       </header>
-      {/* <ul className="py-4 grow">
-        <MenuItems href={`/en/${chatId}/dashboard`}>Dashboard</MenuItems>
-        {progressData && (
-          <MenuItems
-            href={`/en/${chatId}/${progressData.chapter.course.id}/${progressData.chapter.id}`}
-          >
-            courses
-          </MenuItems>
-        )}
-      </ul> */}
       {!data ? (
-        <div className="flex justify-center items-center py-8">
+        <div className="flex justify-center items-center py-12">
           <Loading />
         </div>
       ) : (
-        <Accordion type="single" collapsible>
-          <h3 className="font-bold mb-2">{data.activePackage?.name}</h3>
-          {data.activePackage?.courses.map((course) => (
-            <AccordionItem key={course.id} value={`course-${course.id}`}>
-              <AccordionTrigger>
-                <span>{course.order}</span>
-                {course.title}
-              </AccordionTrigger>
-              <AccordionContent>
-                {course.chapters.map((chapter) => {
-                  const isCompleted = chapterProgress?.[chapter.id];
-                  const chapterLink = `/en/student/${chatId}/${course.id}/${chapter.id}`;
-                  return (
-                    // <MenuItems
-
-                    <div
-                      key={chapter.id}
-                      className={cn(
-                        "block p-2 hover:bg-primary hover:text-foreground hover:rounded-md hover:shadow transition-colors text-muted-foreground "
-                      )}
-                    >
-                      <span
+        <div className="flex-1">
+          <h3 className="text-xl md:text-2xl font-bold text-sky-800 dark:text-sky-100 mb-4 tracking-tight">
+            {data.activePackage?.name}
+          </h3>
+          <Accordion type="single" collapsible className="space-y-2">
+            {data.activePackage?.courses.map((course) => (
+              <AccordionItem
+                key={course.id}
+                value={`course-${course.id}`}
+                className="border border-sky-200 dark:border-sky-700 rounded-lg bg-gray-100 dark:bg-sky-850 shadow-sm transition-shadow duration-200 hover:shadow-md"
+              >
+                <AccordionTrigger className="px-4 py-3 text-base md:text-lg font-semibold text-sky-800 dark:text-sky-200 hover:bg-sky-50 dark:hover:bg-sky-800 rounded-t-lg">
+                  <span className="text-sky-600 dark:text-sky-400 mr-2">
+                    {course.order}.
+                  </span>
+                  {course.title}
+                </AccordionTrigger>
+                <AccordionContent className="px-4 py-2 space-y-2 rounded-b-lg">
+                  {course.chapters.map((chapter) => {
+                    const isCompleted = chapterProgress?.[chapter.id];
+                    const chapterLink = `/en/student/${chatId}/${course.id}/${chapter.id}`;
+                    return (
+                      <div
+                        key={chapter.id}
                         className={cn(
-                          "ml-0 px-0 py-0 rounded text-xs font-semibold",
-                          isCompleted === true
-                            ? ""
-                            : isCompleted === false
-                            ? ""
-                            : ""
+                          "flex items-center p-3 rounded-md transition-all duration-200 hover:bg-sky-50 dark:hover:bg-sky-800 group border border-blue-400 "
                         )}
                       >
-                        {isCompleted === true ? (
-                          <CheckCircle className="inline w-4 h-4 mr-4 text-green-500" />
-                        ) : isCompleted === false ? (
-                          <PlayCircle className="inline w-4 h-4 mr-4 text-gray-400" />
-                        ) : (
-                          <Lock className="inline w-4 h-4 mr-4 text-yellow-500" />
-                        )}
-                      </span>
-                      <span>lesson: {chapter.position}</span>
-                      <button
-                        disabled={!isCompleted}
-                        className={cn(
-                          "text-left text-sm text-gray-700 hover:underline focus:outline-none ml-2",
-                          !isCompleted
-                            ? "text-gray-400 cursor-not-allowed"
-                            : "text-blue-500"
-                        )}
-                        onClick={() => {
-                          if (isCompleted) {
-                            window.location.href = chapterLink;
-                          }
-                        }}
-                        tabIndex={isCompleted ? 0 : -1}
-                        aria-disabled={!isCompleted}
-                        type="button"
-                      >
-                        {chapter.title}
-                      </button>
-                    </div>
-                  );
-                })}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+                        <span
+                          className={cn(
+                            "flex items-center text-xs font-semibold",
+                            isCompleted === true
+                              ? "text-green-500"
+                              : isCompleted === false
+                              ? "text-gray-400"
+                              : "text-yellow-500"
+                          )}
+                        >
+                          {isCompleted === true ? (
+                            <CheckCircle className="w-5 h-5 mr-3 transition-transform duration-300 group-hover:scale-110" />
+                          ) : isCompleted === false ? (
+                            <PlayCircle className="w-5 h-5 mr-3 transition-transform duration-300 group-hover:scale-110" />
+                          ) : (
+                            <Lock className="w-5 h-5 mr-3 transition-transform duration-300 group-hover:scale-110" />
+                          )}
+                        </span>
+                        <span className="text-sm text-sky-600 dark:text-sky-400 ">
+                          Lesson {chapter.position}:
+                        </span>
+                        <button
+                          disabled={!isCompleted}
+                          className={cn(
+                            "text-left text-sm md:text-base font-medium ml-2 transition-colors duration-200",
+                            isCompleted
+                              ? "text-sky-600 dark:text-sky-400 hover:underline"
+                              : "text-slate-400 dark:text-slate-500 cursor-not-allowed"
+                          )}
+                          onClick={() => {
+                            if (isCompleted) {
+                              window.location.href = chapterLink;
+                            }
+                          }}
+                          tabIndex={isCompleted ? 0 : -1}
+                          aria-disabled={!isCompleted}
+                          type="button"
+                        >
+                          {chapter.title}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
       )}
-
-      <footer className="flex items-center gap-2">
-        {/* <Avatar>
-          <AvatarFallback className="bg-pink-300 dark:bg-pink-800">
-            TP
-          </AvatarFallback>
-        </Avatar> */}
-
-        <LightDarkToggle className="ml-auto" />
+      <footer className="flex items-center gap-3 mt-auto pt-4 border-t border-slate-200 dark:border-slate-700">
+        <LightDarkToggle className="ml-auto bg-slate-200 dark:bg-slate-800 p-2 rounded-full hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors duration-200" />
       </footer>
     </nav>
   );

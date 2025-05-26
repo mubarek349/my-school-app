@@ -70,7 +70,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {/* Hamburger button outside Drawer */}
           <button
             onClick={() => setMobileMenuOpen(true)}
-            className="p-2 rounded-md hover:bg-gray-100"
+            className="p-2 rounded-md hover:bg-sky-100"
             aria-label="Open menu"
           >
             <MenuIcon />
@@ -85,7 +85,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               {/* Close button inside Drawer */}
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="mt-4 px-4 py-2 bg-gray-200 rounded w-full"
+                className="mt-4 px-4 py-2 bg-sky-200 rounded w-full"
               >
                 Close
               </button>

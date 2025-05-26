@@ -573,7 +573,7 @@
 
 "use server";
 import { correctAnswer } from "@/actions/student/question";
-import { prisma } from "@/lib/db";
+import  prisma  from "@/lib/db";
 import { showAnswer } from "@/actions/student/question";
 // import sendMessage from "@/bot";
 import { redirect } from "next/navigation";
@@ -673,7 +673,7 @@ export async function unlockingNextChapter(
           });
 
           if (prevChapter.courseId == lastCourse?.id) {
-            const congra = `hello you have finished course thank you so much`;
+            // const congra = `hello you have finished course thank you so much`;
             // await sendMessage(Number(chat_id), congra);
           } else {
             const nextCourse = await prisma.course.findFirst({
@@ -728,7 +728,7 @@ export async function unlockingNextChapter(
         return await showAnswer(chapterId);
       }
       console.log("you Fail the exam:", chapterId);
-      const failed = "you Failed the exam";
+      const failed = "ፈተናዉን ወድቀዋል";
       return failed;
     }
   } catch (error) {

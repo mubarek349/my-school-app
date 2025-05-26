@@ -1,7 +1,19 @@
+import { auth } from "@/auth";
+import { isTeacher } from "@/lib/teacher";
 import { BookOpen } from "lucide-react";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+export  default async function Home() {
+  const session = await auth();
+
+  if (!session?.user) {
+    return redirect("/"); // Ensure no further rendering occurs
+  }
+
+  const userId = session.user.id ? session.user.id : "";
+  if (!isTeacher(userId)) return redirect("/");
+  redirect("/en/admin/coursesPackages");
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-12 md:py-24">

@@ -82,7 +82,7 @@ function Page() {
   // --- NEW: Show "package not started" if noProgress is true ---
   if (progressData === true) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] bg-sky-300">
         <svg
           className="w-16 h-16 text-blue-500 mb-4"
           fill="none"
@@ -115,10 +115,17 @@ function Page() {
   }
 
   return (
-    <div className="overflow-hidden px-2 md:px-10 grid grid-rows-[auto_1fr]">
+    <div
+      className="overflow-hidden px-2 md:px-10 grid grid-rows-[auto_1fr]"
+      style={{
+        background:
+          "linear-gradient(135deg, #FFFFFF 0%, #F2F2F2 50%, #F2F2F2 100%)",
+        minHeight: "100vh",
+      }}
+    >
       <ProgressPage />
       <div className=" flex-col overflow-auto ">
-        <Breadcrumb className="ml-4">
+        <Breadcrumb className="py-2 md:p-5 ">
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink>
@@ -145,11 +152,20 @@ function Page() {
         </Breadcrumb>
         {/* Responsive iframe wrapper */}
         {isLoading ? (
-          <div className=" flex items-center justify-center bg-gray-100">
-            <div className="animate-pulse w-4/5 h-4/5 bg-gray-300 rounded-lg" />
+          <div
+            className="flex items-center justify-center"
+            style={{ backgroundColor: "#FFF9A6" }}
+          >
+            <div
+              className="animate-pulse w-4/5 h-4/5 rounded-lg"
+              style={{ backgroundColor: "#FFF9A6" }}
+            />
           </div>
         ) : data && "message" in data ? (
-          <div className=" flex flex-col items-center justify-center bg-green-50 rounded-lg">
+          <div
+            className="flex flex-col items-center justify-center rounded-lg"
+            style={{ backgroundColor: "#FFF9A6" }}
+          >
             <svg
               className="w-12 h-12 text-green-600 mb-4"
               fill="none"
@@ -169,7 +185,7 @@ function Page() {
           </div>
         ) : (
           <iframe
-            className="max-md:sticky max-md:top-0 w-full aspect-video"
+            className="max-md:sticky max-md:top-0 w-full aspect-video rounded-xl overflow-hidden"
             src={
               data && "chapter" in data && data.chapter?.videoUrl
                 ? `https://www.youtube.com/embed/${data.chapter.videoUrl}`
@@ -182,19 +198,37 @@ function Page() {
             allowFullScreen
           ></iframe>
         )}
-        <div className=" ">
+        <div>
           {isLoading ? (
             <div className="space-y-4">
               <div className="animate-pulse flex flex-col gap-4">
-                <div className="h-6 bg-gray-200 rounded w-1/3" />
-                <div className="h-4 bg-gray-200 rounded w-2/3" />
-                <div className="h-4 bg-gray-200 rounded w-1/2" />
-                <div className="h-10 bg-gray-200 rounded w-full mt-4" />
-                <div className="h-10 bg-gray-200 rounded w-full" />
+                <div
+                  className="h-6 rounded w-1/3"
+                  style={{ backgroundColor: "#FFF9A6" }}
+                />
+                <div
+                  className="h-4 rounded w-2/3"
+                  style={{ backgroundColor: "#FFF9A6" }}
+                />
+                <div
+                  className="h-4 rounded w-1/2"
+                  style={{ backgroundColor: "#FFF9A6" }}
+                />
+                <div
+                  className="h-10 rounded w-full mt-4"
+                  style={{ backgroundColor: "#FFF9A6" }}
+                />
+                <div
+                  className="h-10 rounded w-full"
+                  style={{ backgroundColor: "#FFF9A6" }}
+                />
               </div>
             </div>
           ) : !data ? (
-            <div className="flex flex-col items-center justify-center py-12">
+            <div
+              className="flex flex-col items-center justify-center py-12"
+              style={{ backgroundColor: "#FFF9A6" }}
+            >
               <svg
                 className="w-16 h-16 text-gray-400 mb-4"
                 fill="none"

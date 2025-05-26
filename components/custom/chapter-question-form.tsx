@@ -18,19 +18,19 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form"; // Add useFieldArray for dynamic fields
 import toast from "react-hot-toast";
-import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { QuestionsList } from "./questions-list";
+import { z } from "zod";
 
 interface ChapterQuestionFormProps {
   initialData: chapter & { questions: question[] };
   courseId: string;
   chapterId: string;
-  coursesPackageId:string;
+  coursesPackageId: string;
 }
 
 const formSchema = z.object({
-  title: z.string().min(1, "Title is required"),
+  question: z.string().min(1, "Title is required"),
   options: z
     .array(z.string().nonempty("Option is required"))
     .min(2, "At least two options are required"),
@@ -53,24 +53,24 @@ export const ChapterQuestionForm = ({
   const router = useRouter();
 
   // z.infer<typeof formSchema>
-  const form = useForm<{
-    title: string;
-    options: string[];
-    answers: string[];
-  }>({
-    // resolver: zodResolver(formSchema),
-    defaultValues: { title: "", options: ["", ""], answers: [] },
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { question: "", options: ["", ""], answers: [] },
     mode: "onBlur",
   });
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "options",
+    name: "options" as never,
   });
 
   const { isSubmitting, isValid } = form.formState;
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: {
+    question: string;
+    options: string[];
+    answers: string[];
+  }) => {
     try {
       await axios.post(
         `/api/coursesPackages/${coursesPackageId}/courses/${courseId}/chapters/${chapterId}/questions`,
@@ -98,7 +98,7 @@ export const ChapterQuestionForm = ({
       toast.error("Failed to delete the question.");
     }
   };
-const lang="en";
+  const lang = "en";
   const onEdit = (id: string) => {
     router.push(
       `/${lang}/admin/coursesPackages/${coursesPackageId}/${courseId}/${chapterId}/${id}`
@@ -133,7 +133,7 @@ const lang="en";
           >
             <FormField
               control={form.control}
-              name="title"
+              name="question"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
