@@ -204,30 +204,30 @@ function Page() {
               <div className="animate-pulse flex flex-col gap-4">
                 <div
                   className="h-6 rounded w-1/3"
-                  style={{ backgroundColor: "#FFF9A6" }}
+                  style={{ backgroundColor: "#B2B2B2" }}
                 />
                 <div
                   className="h-4 rounded w-2/3"
-                  style={{ backgroundColor: "#FFF9A6" }}
+                  style={{ backgroundColor: "#B2B2B2" }}
                 />
                 <div
                   className="h-4 rounded w-1/2"
-                  style={{ backgroundColor: "#FFF9A6" }}
+                  style={{ backgroundColor: "#B2B2B2" }}
                 />
                 <div
                   className="h-10 rounded w-full mt-4"
-                  style={{ backgroundColor: "#FFF9A6" }}
+                  style={{ backgroundColor: "#B2B2B2" }}
                 />
                 <div
                   className="h-10 rounded w-full"
-                  style={{ backgroundColor: "#FFF9A6" }}
+                  style={{ backgroundColor: "#B2B2B2" }}
                 />
               </div>
             </div>
           ) : !data ? (
             <div
               className="flex flex-col items-center justify-center py-12"
-              style={{ backgroundColor: "#FFF9A6" }}
+              style={{ backgroundColor: "#B2B2B2" }}
             >
               <svg
                 className="w-16 h-16 text-gray-400 mb-4"
