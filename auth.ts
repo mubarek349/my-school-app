@@ -40,7 +40,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           select: { id: true },
         });
         if (!user) {
-          return redirect("/");
+          return redirect("/en");
         }
 
         return user;

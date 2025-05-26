@@ -91,7 +91,7 @@ export async function startBot() {
       );
     } else {
       return ctx.reply(
-        "🚫 You are not authorized to access the course platform."
+        "🚫 የኮርሱን ፕላትፎርም ለማግኘት አልተፈቀደለዎትም! አድሚኑን ያነጋግሩ፡፡"
       );
     }
   });

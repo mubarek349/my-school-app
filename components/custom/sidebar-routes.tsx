@@ -7,7 +7,7 @@ const teacherRoutes = [
   {
     icon: List,
     label: "Courses",
-    href: "/en/admin/courses",
+    href: "/en/admin/coursesPackages",
   },
   {
     icon: BarChart,
@@ -21,7 +21,7 @@ export const SidebarRoutes = () => {
   //   const segments = pathname?.split("/") ?? [];
   //   const chat_id = segments[0]; // Extracts the last segment
 
-  const isTeacherPage = pathname?.includes("/teacher");
+  const isTeacherPage = pathname?.includes("/en/admin");
 
   const chatId = pathname.split("/")[1];
 

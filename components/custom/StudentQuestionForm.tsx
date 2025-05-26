@@ -11,6 +11,7 @@ import { CheckCircle2Icon, Loader2 } from "lucide-react";
 import Link from "next/link";
 // import { useMediaQuery } from "@/hooks/use-media-query";
 import { useMainMenu } from "@/app/[lang]/(user)/student/layout";
+import AnimatedCircularProgress from "../animatedcountdownprogress";
 
 // Add these SVG icons (or use your own)
 const CheckIcon = () => (
@@ -91,14 +92,31 @@ const StudentQuestionForm = ({
     chatId
   );
 
+  const [count, setCount] = useState(15);
+
   useEffect(() => {
     if (showCorrect && feedback?.result?.score !== 1) {
-      const timer = setTimeout(() => {
-        setShowCorrect(false);
-      }, 10000);
-      return () => clearTimeout(timer);
+      if (count === 0) {
+        setCount(15);
+        return setShowCorrect(false);
+      } // Stop at 0
+
+      const timer = setInterval(() => {
+        setCount((prev) => (prev >= 1 ? prev - 1 : prev));
+      }, 1000);
+
+      return () => clearInterval(timer); // Cleanup interval
     }
-  }, [showCorrect, feedback]);
+  }, [count, showCorrect, feedback]);
+
+  // useEffect(() => {
+  //   if (showCorrect && feedback?.result?.score !== 1) {
+  //     const timer = setTimeout(() => {
+  //       setShowCorrect(false);
+  //     }, 15000);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [showCorrect, feedback]);
 
   React.useEffect(() => {
     if (progressData) {
@@ -186,7 +204,7 @@ const StudentQuestionForm = ({
         <h2 className="text-xl font-semibold">Chapter Questions</h2>
         {chapter?.questions.length ? (
           <div
-            className="mb-40 space-y-2 flex-1 
+            className="mb-25 space-y-2 flex-1 
               max-md:overflow-y-auto md:h-svh"
           >
             {chapter.questions.map((question) => (
@@ -287,13 +305,10 @@ const StudentQuestionForm = ({
                 </Button>
               ) : showCorrect && feedback?.result?.score !== 1 ? (
                 <div className="text-red-600 font-semibold flex items-center">
-                  You failed the exam. Please try again after 15 seconds.
-                  <span className="ml-2">
-                    <CountdownTimer initialSeconds={15} />
-                  </span>
+                  ፈተናውን ወድቀዋል፡፡መልሱ በመታየት ላይ ነው፡፡ በስክሪኑ ላይ የሚመለከቱት ሰከንድ እንዳለቀ ደግመው ይሞክሩ፡፡
+                  <AnimatedCircularProgress count={count} />
                 </div>
               ) : null}
-              <div className="p-10"></div>
             </div>
             {showCorrect && feedback?.result && (
               <div className="mt-6 p-4 rounded bg-slate-50 border text-center">
@@ -314,28 +329,6 @@ const StudentQuestionForm = ({
         )}
       </div>
     </div>
-  );
-};
-
-// Simple countdown timer component
-const CountdownTimer: React.FC<{ initialSeconds: number }> = ({
-  initialSeconds,
-}) => {
-  const [seconds, setSeconds] = useState(initialSeconds);
-
-  useEffect(() => {
-    if (seconds <= 0) return;
-    const interval = setInterval(() => setSeconds((s) => s - 1), 1000);
-    return () => clearInterval(interval);
-  }, [seconds]);
-
-  const minutes = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-
-  return (
-    <span>
-      {minutes}:{secs.toString().padStart(2, "0")}
-    </span>
   );
 };
 
