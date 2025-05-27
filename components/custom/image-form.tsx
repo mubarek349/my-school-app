@@ -9,6 +9,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 
 interface ImageFormProps {
@@ -29,6 +31,11 @@ export const ImageForm = ({ initialData, courseId,coursesPackageId }: ImageFormP
   const toggleEdit = () => setIsEditing((prev) => !prev);
 
 
+useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { imageUrl:initialData?.imageUrl ||"" },
+  });
+  // const { isSubmitting, isValid } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {

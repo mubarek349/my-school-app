@@ -54,6 +54,7 @@ export const CoursesForm = ({
         `/api/coursesPackages/${coursesPackageId}/courses`,
         values
       );
+      form.reset();
       toast.success("Course Created");
       toggleCreating();
       router.refresh();

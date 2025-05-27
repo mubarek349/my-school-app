@@ -3,7 +3,7 @@ import { ArrowLeft, LayoutDashboard, ListChecks } from "lucide-react";
 import prisma from "@/lib/db";
 import { redirect } from "next/navigation";
 import { IconBadge } from "@/components/icon-badge";
-import { ImageForm } from "@/components/custom/image-form";
+// import { ImageForm } from "@/components/custom/image-form";
 import { auth } from "@/auth";
 import { isTeacher } from "@/lib/teacher";
 import { CourseTitleForm } from "@/components/custom/course-title-form";
@@ -102,12 +102,12 @@ const CourseIdPage = async ({
               coursesPackageId={coursesPackageId}
               courseId={course.id}
             />
-            <p>you can skip the image</p>
+            {/* <p>you can skip the image</p>
             <ImageForm
               initialData={course}
               coursesPackageId={coursesPackageId}
               courseId={course.id}
-            />
+            /> */}
           </div>
         </div>
         <div className="space-y-6">

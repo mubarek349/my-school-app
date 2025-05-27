@@ -65,7 +65,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="md:grid md:grid-cols-[250px_1fr] h-auto overflow-hidden">
       <MainMenu data={data} className="hidden md:flex" />
       {isMobile && (
-        <div className="p-4 flex justify-between md:hidden sticky top-0 left-0 bg-sky-700/100 border-b border-border">
+        <div className="p-4 flex justify-between md:hidden sticky top-0 left-0  border-b border-border">
           <MenuTitle />
           {/* Hamburger button outside Drawer */}
           <button

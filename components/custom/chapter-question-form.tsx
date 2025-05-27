@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea"; // Add Input for options
 import { Input } from "@/components/ui/input"; // Add Input for options
-import { zodResolver } from "@hookform/resolvers/zod";
+// import { zodResolver } from "@hookform/resolvers/zod";
 import { chapter, question } from "@prisma/client";
 import axios from "axios";
 import { PlusCircle } from "lucide-react";
@@ -18,26 +18,26 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form"; // Add useFieldArray for dynamic fields
 import toast from "react-hot-toast";
+// import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { QuestionsList } from "./questions-list";
-import { z } from "zod";
 
 interface ChapterQuestionFormProps {
   initialData: chapter & { questions: question[] };
   courseId: string;
   chapterId: string;
-  coursesPackageId: string;
+  coursesPackageId:string;
 }
 
-const formSchema = z.object({
-  question: z.string().min(1, "Title is required"),
-  options: z
-    .array(z.string().nonempty("Option is required"))
-    .min(2, "At least two options are required"),
-  answers: z
-    .array(z.string().min(1, "Option is required"))
-    .min(1, "At least two options are required"),
-});
+// const formSchema = z.object({
+//   title: z.string().min(1, "Title is required"),
+//   options: z
+//     .array(z.string().nonempty("Option is required"))
+//     .min(2, "At least two options are required"),
+//   answers: z
+//     .array(z.string().min(1, "Option is required"))
+//     .min(1, "At least two options are required"),
+// });
 
 export const ChapterQuestionForm = ({
   initialData,
@@ -53,9 +53,13 @@ export const ChapterQuestionForm = ({
   const router = useRouter();
 
   // z.infer<typeof formSchema>
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { question: "", options: ["", ""], answers: [] },
+  const form = useForm<{
+    title: string;
+    options: string[];
+    answers: string[];
+  }>({
+    // resolver: zodResolver(formSchema),
+    defaultValues: { title: "", options: ["", ""], answers: [] },
     mode: "onBlur",
   });
 
@@ -67,7 +71,7 @@ export const ChapterQuestionForm = ({
   const { isSubmitting, isValid } = form.formState;
 
   const onSubmit = async (values: {
-    question: string;
+    title: string;
     options: string[];
     answers: string[];
   }) => {
@@ -98,7 +102,7 @@ export const ChapterQuestionForm = ({
       toast.error("Failed to delete the question.");
     }
   };
-  const lang = "en";
+const lang="en";
   const onEdit = (id: string) => {
     router.push(
       `/${lang}/admin/coursesPackages/${coursesPackageId}/${courseId}/${chapterId}/${id}`
@@ -133,7 +137,7 @@ export const ChapterQuestionForm = ({
           >
             <FormField
               control={form.control}
-              name="question"
+              name="title"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>

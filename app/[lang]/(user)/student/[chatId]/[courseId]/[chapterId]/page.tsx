@@ -75,8 +75,6 @@ function Page() {
       }
     }
     checkPackage();
-    // Only run on mount or when chatId changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatId]);
 
   // --- NEW: Show "package not started" if noProgress is true ---
